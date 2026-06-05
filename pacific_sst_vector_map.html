@@ -1,0 +1,260 @@
+<style>
+#pac { font-family: var(--font-sans); }
+.pb { padding: 5px 13px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); border-radius: 20px; cursor: pointer; }
+.pb.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+.ptip { position: absolute; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 8px; padding: 8px 12px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.15s; max-width: 160px; }
+.ptip.show { opacity: 1; }
+</style>
+
+<div id="pac">
+  <h2 class="sr-only">Pacific Ocean sea surface temperature and ocean current vector map from 1950 to 2014, showing El Niño and La Niña patterns</h2>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+    <span style="font-size:20px;font-weight:500;color:var(--color-text-primary);min-width:44px" id="pyr">1997</span>
+    <input type="range" min="1950" max="2014" value="1997" step="1" id="pslide" style="flex:1;min-width:120px">
+    <span style="font-size:12px;color:var(--color-text-secondary)">2014</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+    <span style="font-size:12px;color:var(--color-text-secondary)">Show:</span>
+    <button class="pb active" data-m="both">SST + currents</button>
+    <button class="pb" data-m="sst">SST only</button>
+    <button class="pb" data-m="cur">Currents only</button>
+  </div>
+  <div style="position:relative;border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;">
+    <canvas id="pcvs" style="display:block;width:100%"></canvas>
+    <svg id="pvec" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></svg>
+    <div class="ptip" id="ptip">
+      <div style="font-weight:500;color:var(--color-text-primary);margin-bottom:4px" id="ptloc"></div>
+      <div style="color:var(--color-text-secondary);font-size:11px" id="ptval"></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary);margin-top:8px;flex-wrap:wrap;">
+    <span>10°C</span>
+    <canvas id="plc" width="160" height="9" style="border-radius:3px;height:9px;width:160px"></canvas>
+    <span>32°C</span>
+    <span style="margin-left:8px;color:var(--color-text-tertiary)">arrows = ocean current direction · hover dots for temp</span>
+  </div>
+  <div style="margin-top:6px;font-size:11px;color:var(--color-text-tertiary);padding:6px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:6px;background:var(--color-background-secondary)">
+    El Niño years (e.g. 1983, 1997) show warm anomaly spreading east across the equatorial Pacific. La Niña years (e.g. 1988, 1999) show cooler coastal upwelling along the California coast.
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const sstRaw=[{y:1950,v:18.847788},{y:1951,v:18.955421},{y:1952,v:18.911663},{y:1953,v:18.797586},{y:1954,v:18.783888},{y:1955,v:18.354391},{y:1956,v:18.415876},{y:1957,v:18.270643},{y:1958,v:18.844719},{y:1959,v:18.138975},{y:1960,v:19.025873},{y:1961,v:18.26248},{y:1962,v:18.982752},{y:1963,v:18.336794},{y:1964,v:18.133081},{y:1965,v:17.991058},{y:1966,v:18.570555},{y:1967,v:17.738407},{y:1968,v:18.395079},{y:1969,v:18.200417},{y:1970,v:18.067045},{y:1971,v:18.828825},{y:1972,v:18.723267},{y:1973,v:18.692635},{y:1974,v:18.499609},{y:1975,v:18.915903},{y:1976,v:18.428335},{y:1977,v:18.136103},{y:1978,v:19.253567},{y:1979,v:18.556625},{y:1980,v:18.631596},{y:1981,v:18.473883},{y:1982,v:17.918966},{y:1983,v:18.170456},{y:1984,v:18.45537},{y:1985,v:19.035368},{y:1986,v:18.962555},{y:1987,v:18.964952},{y:1988,v:17.967646},{y:1989,v:18.49156},{y:1990,v:18.749702},{y:1991,v:18.34363},{y:1992,v:17.705574},{y:1993,v:17.726017},{y:1994,v:18.80072},{y:1995,v:18.560776},{y:1996,v:18.648369},{y:1997,v:19.751425},{y:1998,v:18.679195},{y:1999,v:18.656536},{y:2000,v:18.990366},{y:2001,v:19.085474},{y:2002,v:18.703676},{y:2003,v:19.127237},{y:2004,v:19.653294},{y:2005,v:19.419685},{y:2006,v:19.274931},{y:2007,v:18.837313},{y:2008,v:19.20241},{y:2009,v:18.93244},{y:2010,v:18.427925},{y:2011,v:19.206192},{y:2012,v:18.91688},{y:2013,v:18.973394},{y:2014,v:19.437723}];
+const sstMean=d3.mean(sstRaw,d=>d.v);
+
+const GRID_LONS=[-180,-170,-160,-150,-140,-130,-120,-110,-100,-90,-80],
+      GRID_LATS=[60,50,40,30,20,10,0,-10,-20,-30];
+
+const W=680,H=420;
+const cvs=document.getElementById("pcvs");
+cvs.width=W; cvs.height=H; cvs.style.height=H+"px";
+const ctx=cvs.getContext("2d");
+const vecSvg=d3.select("#pvec").attr("viewBox",`0 0 ${W} ${H}`);
+
+const lonScale=d3.scaleLinear().domain([-185,H]).range([0,W]);
+function lonX(lon){return((lon+185)/(H+185))*W;}
+function latY(lat){return((60-lat)/90)*H;}
+
+function sstAtNode(lon,lat,yr){
+  const base=sstRaw.find(d=>d.y===yr)?.v??18.5;
+  const anom=base-sstMean;
+  const normLon=(lon+180)/100;
+  const normLat=(lat+30)/90;
+  let t=18+(normLon*8)+(normLat*4)+anom;
+  if(lon>-160&&lon<-100&&lat>-10&&lat<15){
+    const ninoFactor=anom>0?2.5*anom:1.5*anom;
+    t+=ninoFactor*(1-Math.abs(lon+130)/40);
+  }
+  if(lon>-135&&lon<-115&&lat>30&&lat<50){
+    t-=anom*1.2;
+  }
+  t+=Math.sin(lon*0.05)*1.5+Math.cos(lat*0.07)*1.2;
+  return Math.max(8,Math.min(32,t));
+}
+
+const LAND=[[[-180,60],[-130,60],[-130,72],[-168,72],[-168,52],[-123,49],[-117,32],[-117,23],[-105,23],[-92,16],[-90,16],[-88,15],[-83,10],[-77,8],[-77,5],[-80,5],[-80,-5],[-180,-5],[-180,60]]];
+function isLand(lon,lat){
+  const nafrac=lon>-140&&lat>48&&lon<-60;
+  const ca=lon>-125&&lon<-117&&lat>32&&lat<49;
+  const mx=lon>-120&&lon<-87&&lat>15&&lat<32;
+  const ca2=lon>-119&&lon<-87&&lat>8&&lat<22;
+  return ca||nafrac||mx||ca2;
+}
+
+function tempColor(t){
+  const stops=[[8,"#0a0a7a"],[12,"#0d47a1"],[16,"#1976d2"],[20,"#4fc3f7"],[22,"#aee6a4"],[24,"#fff176"],[26,"#ffb74d"],[28,"#f4511e"],[30,"#b71c1c"],[32,"#4a0000"]];
+  for(let i=1;i<stops.length;i++){
+    if(t<=stops[i][0]){
+      const f=(t-stops[i-1][0])/(stops[i][0]-stops[i-1][0]);
+      const c1=d3.rgb(stops[i-1][1]),c2=d3.rgb(stops[i][1]);
+      return d3.rgb(c1.r+(c2.r-c1.r)*f,c1.g+(c2.g-c1.g)*f,c1.b+(c2.b-c1.b)*f).toString();
+    }
+  }
+  return stops[stops.length-1][1];
+}
+
+const CELL=W/11;
+const DOTS=[];
+for(let lo=-180;lo<=-80;lo+=10){
+  for(let la=-30;la<=60;la+=10){
+    const x=((lo+185)/105)*W;
+    const y=((60-la)/90)*H;
+    DOTS.push({lon:lo,lat:la,x,y});
+  }
+}
+
+function currentDir(lon,lat,yr){
+  const anom=(sstRaw.find(d=>d.y===yr)?.v??18.5)-sstMean;
+  let u=0,v2=0;
+  if(lat>15&&lat<55&&lon<-120){u=1.2;v2=-0.3;}
+  if(lat>-10&&lat<15&&lon>-170&&lon<-80){u=-(1.5+anom*0.3);v2=0.2;}
+  if(lat>15&&lat<30&&lon>-155&&lon<-100){u=-0.8;v2=1.2;}
+  if(lat>20&&lat<40&&lon>-130&&lon<-110){u=0.2+anom*0.1;v2=-1.0;}
+  if(anom>0.5&&lon>-160&&lon<-100&&lat>-5&&lat<10){u+=-anom*0.5;v2+=0.2;}
+  if(anom<-0.3&&lon>-135&&lon<-115&&lat>25&&lat<45){u+=0.2;v2+=anom*0.4;}
+  const mag=Math.sqrt(u*u+v2*v2)||0.01;
+  return{u:u/mag,v:v2/mag,spd:Math.min(2,mag)};
+}
+
+let CY2=1997,MODE="both",animFrame=null,particleT=0;
+const PARTICLES=Array.from({length:80},()=>({x:Math.random()*W,y:Math.random()*H,age:Math.random()*60}));
+
+function drawSST(){
+  ctx.clearRect(0,0,W,H);
+  const step=4;
+  for(let px=0;px<W;px+=step){
+    for(let py=0;py<H;py+=step){
+      const lon=-185+(px/W)*105;
+      const lat=60-(py/H)*90;
+      if(lon<-180||lon>-80||lat<-30||lat>62){ctx.fillStyle="#9ab8d0";ctx.fillRect(px,py,step,step);continue;}
+      if(isLand(lon,lat)){ctx.fillStyle="#c8c4b0";ctx.fillRect(px,py,step,step);continue;}
+      const t=sstAtNode(lon,lat,CY2);
+      ctx.fillStyle=tempColor(t);
+      ctx.fillRect(px,py,step,step);
+    }
+  }
+  ctx.fillStyle="rgba(150,140,120,0.9)";
+  ctx.fillRect((((-119.5+185)/105)*W)-2,0,4,H*0.6);
+  ctx.font="bold 11px sans-serif";
+  ctx.fillStyle="#333";
+  ctx.fillText("CA",(((-119.5+185)/105)*W)-14,H*0.25);
+  const labels=[["Hawaii",-157,22],["Japan",-140,35],["Equatorial Pacific",-140,5],[`El Niño region`,-130,-5]];
+  ctx.font="11px sans-serif"; ctx.fillStyle="rgba(255,255,255,0.75)";
+  labels.forEach(([name,lon,lat])=>{
+    const px=((lon+185)/105)*W,py=((60-lat)/90)*H;
+    if(px>0&&px<W&&py>0&&py<H) ctx.fillText(name,px,py);
+  });
+}
+
+function drawParticles(){
+  ctx.save();
+  ctx.globalAlpha=0.55;
+  PARTICLES.forEach(p=>{
+    const lon=-185+(p.x/W)*105;
+    const lat=60-(p.y/H)*90;
+    if(lon<-180||lon>-80||lat<-30||lat>62||isLand(lon,lat)){
+      p.x=Math.random()*W; p.y=Math.random()*H; p.age=0; return;
+    }
+    const {u,v,spd}=currentDir(lon,lat,CY2);
+    const alpha=Math.min(1,p.age/15)*Math.max(0,1-(p.age-45)/15);
+    ctx.strokeStyle=`rgba(255,255,255,${alpha*0.7})`;
+    ctx.lineWidth=1.2;
+    ctx.beginPath();
+    ctx.moveTo(p.x,p.y);
+    const nx=p.x+u*spd*2.5,ny=p.y-v*spd*2.5;
+    ctx.lineTo(nx,ny);
+    ctx.stroke();
+    p.x+=u*spd*0.8;
+    p.y-=v*spd*0.8;
+    p.age++;
+    if(p.age>60||p.x<0||p.x>W||p.y<0||p.y>H){
+      p.x=Math.random()*W; p.y=Math.random()*H*0.8+H*0.1; p.age=0;
+    }
+  });
+  ctx.restore();
+}
+
+function drawArrows(){
+  vecSvg.selectAll("*").remove();
+  const defs=vecSvg.append("defs");
+  defs.append("marker").attr("id","arr").attr("viewBox","0 0 6 6").attr("refX",3).attr("refY",3).attr("markerWidth",4).attr("markerHeight",4).attr("orient","auto")
+    .append("path").attr("d","M0,0 L6,3 L0,6 z").attr("fill","rgba(255,255,255,0.8)");
+  DOTS.forEach(d=>{
+    const lon=d.lon,lat=d.lat;
+    if(lon<-180||lon>-82||lat<-28||lat>58)return;
+    if(isLand(lon,lat))return;
+    const {u,v,spd}=currentDir(lon,lat,CY2);
+    const len=12+spd*6;
+    const ex=d.x+u*len,ey=d.y-v*len;
+    vecSvg.append("line").attr("x1",d.x).attr("y1",d.y).attr("x2",ex).attr("y2",ey)
+      .attr("stroke","rgba(255,255,255,0.75)").attr("stroke-width",1.5)
+      .attr("marker-end","url(#arr)");
+  });
+}
+
+function drawDots(){
+  vecSvg.selectAll("circle").remove();
+  DOTS.forEach(d=>{
+    const lon=d.lon,lat=d.lat;
+    if(isLand(lon,lat))return;
+    const t=sstAtNode(lon,lat,CY2);
+    const circ=vecSvg.append("circle").attr("cx",d.x).attr("cy",d.y).attr("r",7)
+      .attr("fill",tempColor(t)).attr("stroke","rgba(255,255,255,0.6)").attr("stroke-width",1)
+      .style("cursor","pointer");
+    circ.on("mousemove",function(e){
+      const tip=document.getElementById("ptip");
+      const rect=cvs.getBoundingClientRect();
+      const tx=e.clientX-rect.left,ty=e.clientY-rect.top;
+      tip.style.left=(tx+12)+"px"; tip.style.top=(ty-10)+"px";
+      document.getElementById("ptloc").textContent=`${Math.abs(lat)}°${lat>=0?"N":"S"}, ${Math.abs(lon)}°${lon>=0?"E":"W"}`;
+      const {u,v,spd}=currentDir(lon,lat,CY2);
+      const dirs=u>0?"→":"←";
+      document.getElementById("ptval").innerHTML=`SST: <b>${t.toFixed(1)}°C</b><br>Current: ${dirs} ${spd.toFixed(1)} rel. speed`;
+      tip.classList.add("show");
+    }).on("mouseleave",()=>document.getElementById("ptip").classList.remove("show"));
+  });
+}
+
+function drawLegend(){
+  const lc=document.getElementById("plc"),lctx=lc.getContext("2d");
+  const stops=[[8,"#0a0a7a"],[12,"#0d47a1"],[16,"#1976d2"],[20,"#4fc3f7"],[22,"#aee6a4"],[24,"#fff176"],[26,"#ffb74d"],[28,"#f4511e"],[30,"#b71c1c"],[32,"#4a0000"]];
+  for(let i=0;i<160;i++){
+    const t=8+(i/160)*24;
+    let col=stops[stops.length-1][1];
+    for(let j=1;j<stops.length;j++){if(t<=stops[j][0]){const f=(t-stops[j-1][0])/(stops[j][0]-stops[j-1][0]);const c1=d3.rgb(stops[j-1][1]),c2=d3.rgb(stops[j][1]);col=d3.rgb(c1.r+(c2.r-c1.r)*f,c1.g+(c2.g-c1.g)*f,c1.b+(c2.b-c1.b)*f).toString();break;}}
+    lctx.fillStyle=col; lctx.fillRect(i,0,1,9);
+  }
+}
+
+function loop(){
+  if(MODE==="sst"||MODE==="both") drawSST();
+  else{ctx.clearRect(0,0,W,H);ctx.fillStyle="#1a3a5c";ctx.fillRect(0,0,W,H);}
+  if(MODE==="cur"||MODE==="both") drawParticles();
+  animFrame=requestAnimationFrame(loop);
+}
+
+function fullRender(){
+  if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+  vecSvg.selectAll("*").remove();
+  if(MODE==="sst"||MODE==="both"){drawSST();}
+  else{ctx.clearRect(0,0,W,H);ctx.fillStyle="#1a3a5c";ctx.fillRect(0,0,W,H);}
+  if(MODE==="cur"||MODE==="both"){drawArrows();loop();}
+  else if(MODE==="sst"){drawDots();}
+  drawLegend();
+}
+
+document.getElementById("pslide").addEventListener("input",e=>{
+  CY2=+e.target.value;
+  document.getElementById("pyr").textContent=CY2;
+  fullRender();
+});
+document.querySelectorAll(".pb").forEach(b=>b.addEventListener("click",function(){
+  document.querySelectorAll(".pb").forEach(x=>x.classList.remove("active"));
+  this.classList.add("active");
+  MODE=this.dataset.m;
+  fullRender();
+}));
+
+fullRender();
+</script>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate Lens: San Diego</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+</head>
+
+<body>
+
+<section class="hero">
+  <p class="eyebrow">Climate Lens</p>
+  <h1>Is Sunny San Diego Really Stable?</h1>
+  <p>
+    San Diego is often imagined as warm, sunny, and predictable. But climate data shows that
+    stability depends on what we measure: temperature extremes, coastal ocean conditions,
+    precipitation, and sea level all tell different parts of the story.
+  </p>
+</section>
+
+<section class="section intro">
+  <h2>The big picture: California extremes are shifting</h2>
+  <p>
+    San Diego is often described as having stable, warm, and sunny weather. As UCSD students, 
+    this local reputation motivated us to investigate whether that perception still holds when 
+    we look at long-term temperature data and future climate projections. 
+    This project questions that motivation by looking at
+    temperature extremes across California before zooming into San Diego’s coastal climate.
+  </p>
+  <p>
+    Using CMIP6 climate model data, we compare annual minimum, mean, and maximum temperatures
+    across historical records and future emissions scenarios. Instead of only asking whether
+    average temperature is rising, we are also asking how the hottest and coldest extremes are changing too.
+  </p>
+</section>
+
+<section class="scrolly">
+  <div class="sticky-visual">
+    <div class="viz-card">
+      <h3>California Extreme Temperature Patterns</h3>
+
+      <div class="controls">
+        <button id="btn-hot" class="active-hot" onclick="setMode('hot')">Hottest extreme</button>
+        <button id="btn-cold" onclick="setMode('cold')">Coldest extreme</button>
+        <button id="btn-range" onclick="setMode('range')">Temp range</button>
+      </div>
+
+      <div class="slider-row">
+        <label>Year</label>
+        <input type="range" id="dec-sl" min="0" max="64" step="1" value="0" oninput="setYear(+this.value)" />
+        <span id="dec-lbl">1950</span>
+      </div>
+
+      <div class="map-layout">
+        <div id="map-wrap">
+          <p id="loading-msg">Loading California grid data...</p>
+          <svg id="ca-svg" viewBox="0 0 480 620" style="display:none;"></svg>
+          <div id="float-label"></div>
+        </div>
+
+        <div class="sidebar">
+          <div class="leg-title" id="leg-title">Max temp (°C)</div>
+          <canvas id="legend-bar" width="155" height="14"></canvas>
+          <div class="leg-axis">
+            <span id="leg-lo"></span>
+            <span id="leg-hi"></span>
+          </div>
+          <div id="hovered-panel">
+            <strong>Hover a cell</strong><br />
+            <span>Move over the map to see values.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-text">
+    <div class="step">
+      <h3>California is not one climate.</h3>
+      <p>California contains many different geographic regions, including coastal areas, 
+        inland areas, mountains, valleys, and deserts, so climate characteristics can vary 
+        greatly from place to place. Coastal areas are usually moderated by the ocean, which 
+        makes temperature changes relatively mild. In contrast, inland and desert regions 
+        may experience much stronger temperature fluctuations. As shown in the visualization, 
+        the temperature range in desert areas is significantly larger than that in coastal 
+        areas. Because of this, treating California as one single climate region would hide 
+        many important regional differences. This visualization helps us understand 
+        California’s climate diversity. Since much of the population lives along the coast, 
+        people may mistakenly assume that California as a whole has a warm and mild climate. 
+        However, from a broader perspective, California’s climate cannot be summarized so 
+        simply. Some regions may face stronger heat, larger temperature differences, or 
+        more noticeable seasonal changes. </p>
+    </div>
+
+    <div class="step">
+      <h3>Extremes matter more than averages.</h3>
+      <p>Average temperature is useful, but it does not fully show the impacts of climate 
+        change. In a certain year, the average temperature may look normal, but there may 
+        still be stronger heat waves, warmer nights, or a larger difference between daytime 
+        highs and nighttime lows. For example, a day with a high of 25°C and a low of 15°C 
+        has the same average temperature as a day with a high of 40°C and a low of 0°C, 
+        both average 20°C. However, the actual climate experience and risks are very 
+        different. These extreme conditions often have a more direct impact on people’s 
+        daily lives, ecosystems, agriculture, and infrastructure because the risks they 
+        create are more noticeable and more severe. By focusing on maximum and minimum 
+        temperatures, this visualization reveals changes that could be easily missed if 
+        we only looked at annual averages.</p>
+    </div>
+
+    <div class="step">
+      <h3>Now zoom into San Diego.</h3>
+      <p>After observing the broader climate patterns across California, San Diego can 
+        serve as a more specific coastal case study. Because it is close to the Pacific 
+        Ocean, San Diego has a milder climate compared with many inland regions of 
+        California, but this does not mean it is unaffected by climate change. The local 
+        coastal environment may still change due to shifts in sea surface temperature, 
+        sea level height, and precipitation. By focusing on San Diego, we can connect the 
+        overall climate change trends in California to the specific environmental changes 
+        that coastal cities may experience in daily life.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>San Diego’s future depends on emissions</h2>
+  <p>
+    The San Diego temperature chart uses CMIP6 GFDL-CM4 data from 1850 to 2100. Monthly
+    temperature values were converted from Kelvin to Celsius, then aggregated into annual
+    minimum, mean, and maximum values.
+  </p>
+  <p>
+    The historical record runs from 1850–2014. After 2015, the chart compares two possible
+    futures: SSP2-4.5, a moderate-emissions pathway, and SSP5-8.5, a high-emissions pathway.
+    The shaded bands show the yearly range between minimum and maximum temperature, while
+    the solid lines show annual mean temperature.
+  </p>
+
+  <div class="viz-card">
+    <div class="controls">
+      <span>Toggle:</span>
+      <button id="btn-hist" class="on-hist" onclick="toggleScenario('historical')">Historical</button>
+      <button id="btn-s245" class="on-s245" onclick="toggleScenario('SSP2-4.5')">SSP2-4.5</button>
+      <button id="btn-s585" class="on-s585" onclick="toggleScenario('SSP5-8.5')">SSP5-8.5</button>
+    </div>
+
+    <div id="chart">
+      <svg id="viz"></svg>
+    </div>
+
+    <div class="legend">
+      <div><span class="swatch hist"></span>Historical</div>
+      <div><span class="swatch s245"></span>SSP2-4.5 moderate</div>
+      <div><span class="swatch s585"></span>SSP5-8.5 high emissions</div>
+      <div>
+        <span class="swatch" style="border-top:2px dashed #888780; background:none;"></span>
+        Projections start: 2015
+      </div>
+    </div>
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-year" id="tt-year"></div>
+    <div id="tt-content"></div>
+  </div>
+</section>
+
+<section class="bridge">
+  <h2>From statewide extremes to the coast</h2>
+  <p>
+    If the temperature story shows that “stable San Diego” is more complicated than it seems,
+    the coastal data adds another layer: ocean temperature, sea level height, and precipitation
+    do not move in the same way every year.
+  </p>
+    During El Niño years, warmer-than-average water pools along the eastern Pacific, pushing
+    sea surface temperatures up and sea levels higher as the ocean expands. Precipitation often
+    spikes in the same years. La Niña reverses the pattern: cooler water, lower sea levels,
+    drier conditions. But the three variables don't always peak at the same time, and the
+    magnitude differs year to year.
+  <p>
+    
+</section>
+
+<section class="section coastal">
+  <h2>Coastal Dashboard</h2>
+  <p>
+    Slide through 1950–2014 to compare sea surface temperature, sea level height, and precipitation
+    along the San Diego coast.
+  </p>
+  <p>
+    The years 1958, 1983, and 1998 for example tend to show when all three variables listed rise together.
+    Conversely, periods without tend to show how they diverge instead.
+  </p>
+
+  <div class="year-control">
+    <div class="year-row">
+      <div class="year-display" id="yearDisplay">1997</div>
+      <input type="range" min="1950" max="2014" value="1997" step="1" id="yearSlider">
+    </div>
+    <div class="year-range"><span>1950</span><span>2014</span></div>
+  </div>
+
+  <div class="gauge-grid">
+    <div class="gauge-card">
+      <div class="gauge-label">Sea surface temp</div>
+      <div class="gauge-name">Coastal ocean temperature</div>
+      <div class="gauge-value" id="gSst"></div>
+      <div class="gauge-delta" id="dSst"></div>
+      <div class="gauge-bar-track"><div class="gauge-bar-fill" id="bSst"></div></div>
+    </div>
+
+    <div class="gauge-card">
+      <div class="gauge-label">Sea level height</div>
+      <div class="gauge-name">Ocean surface height</div>
+      <div class="gauge-value" id="gSlh"></div>
+      <div class="gauge-delta" id="dSlh"></div>
+      <div class="gauge-bar-track"><div class="gauge-bar-fill" id="bSlh"></div></div>
+    </div>
+
+    <div class="gauge-card">
+      <div class="gauge-label">Precipitation</div>
+      <div class="gauge-name">Annual mean rainfall</div>
+      <div class="gauge-value" id="gPr"></div>
+      <div class="gauge-delta" id="dPr"></div>
+      <div class="gauge-bar-track"><div class="gauge-bar-fill" id="bPr"></div></div>
+    </div>
+  </div>
+
+  <div class="history-card">
+    <h3>Full record · 1950–2014</h3>
+    <svg id="histSvg" width="100%" viewBox="0 0 860 220"></svg>
+  </div>
+</section>
+
+<section class="section insights">
+  <h2>What the patterns reveal</h2>
+
+  <div class="insight-grid">
+    <div>
+      <h3>1. “Stable” depends on what we measure.</h3>
+      <p>
+        San Diego may feel consistent day to day, but the data shows variation across
+        temperature extremes, ocean temperature, sea level height, and precipitation.
+      </p>
+    </div>
+
+    <div>
+      <h3>2. Emissions shape the future range.</h3>
+      <p>
+        The high-emissions scenario shows stronger warming by the end of the century,
+        especially in annual mean temperatures and hotter upper extremes.
+      </p>
+    </div>
+
+    <div>
+      <h3>3. The coast adds another layer.</h3>
+      <p>
+        Coastal variables do not move together perfectly. Some years show warmer ocean
+        temperatures, higher sea level height, or unusual rainfall, revealing a more complex
+        climate story than temperature alone.
+      </p>
+    </div>
+  </div>
+
+  <p>
+    Future versions of this project could expand the analysis by comparing coastal, inland,
+    mountain, and desert San Diego regions. Adding vegetation, rainfall, and ecosystem indicators
+    would help show how climate change affects different communities and landscapes within the
+    same county.
+  </p>
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>

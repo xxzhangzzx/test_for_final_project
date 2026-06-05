@@ -1,0 +1,295 @@
+body {
+    margin: 0;
+    background: #f7f4ef;
+    color: #0a2a4a;
+    font-family: -apple-system, BlinkMacSystemFont, "Source Sans 3", sans-serif;
+  }
+  
+  .hero {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 6rem 1.5rem 3rem;
+  }
+  
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 0.95;
+    margin: 0 0 1rem;
+  }
+  
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    color: #7f8c8d;
+  }
+  
+  .section {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+  
+  .section h2,
+  .bridge h2 {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    margin-bottom: 1rem;
+  }
+  
+  .scrolly {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+    padding: 3rem 1.5rem;
+  }
+  
+  .sticky-visual {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+  }
+  
+  .scroll-text {
+    padding-top: 20vh;
+  }
+  
+  .step {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .viz-card,
+  .year-control,
+  .gauge-card,
+  .history-card {
+    background: white;
+    border: 1px solid rgba(10,42,74,.12);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 8px 30px rgba(10,42,74,.06);
+  }
+  
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  
+  button {
+    border: 1px solid #bbb;
+    background: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  
+  .active-hot,
+  .on-hist { background: #444441; color: white; }
+  
+  .active-cold { background: #003080; color: white; }
+  .active-range { background: #5a0060; color: white; }
+  .on-s245 { background: #ba7517; color: white; }
+  .on-s585 { background: #a32d2d; color: white; }
+  
+  .map-layout {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  #map-wrap {
+    position: relative;
+    flex: 1;
+  }
+  
+  .sidebar {
+    width: 350px;
+    font-size: 0.8rem;
+  }
+  
+  .bridge {
+    background: #0a2a4a;
+    color: white;
+    padding: 5rem max(1.5rem, 10vw);
+  }
+  
+  .gauge-grid,
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .year-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .year-display {
+    font-size: 3rem;
+    font-weight: 700;
+  }
+  
+  .year-row input {
+    flex: 1;
+  }
+  
+  .gauge-value {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  .gauge-bar-track {
+    height: 6px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .gauge-bar-fill {
+    height: 100%;
+  }
+  
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    opacity: 0;
+    z-index: 1000;
+  }
+  
+  #float-label {
+    position: absolute;
+    pointer-events: none;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    display: none;
+    opacity: 1;
+    z-index: 100;
+  }
+  
+  @media (max-width: 800px) {
+    .scrolly {
+      grid-template-columns: 1fr;
+    }
+  
+    .sticky-visual {
+      position: static;
+    }
+  
+    .gauge-grid,
+    .insight-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .map-layout {
+      flex-direction: column;
+    }
+  }
+  .gridline line {
+    stroke: #e8e6e0;
+    stroke-dasharray: 2 3;
+  }
+  
+  .gridline path {
+    stroke: none;
+  }
+  
+  .axis text {
+    font-size: 11px;
+    fill: #888780;
+  }
+  
+  .axis path,
+  .axis line {
+    stroke: #d3d1c7;
+  }
+  
+  .proj-line {
+    stroke: #888780;
+    stroke-dasharray: 4 4;
+    stroke-width: 1;
+  }
+  
+  .proj-label {
+    font-size: 10px;
+    fill: #888780;
+  }
+  
+  .line-mean {
+    fill: none;
+    stroke-width: 2;
+  }
+  
+  .line-ext {
+    fill: none;
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+  
+  .ca-outline {
+    fill: none;
+    stroke: #555;
+    stroke-width: 1.5px;
+    pointer-events: none;
+  }
+  
+  .grid-cell {
+    stroke: none;
+    cursor: crosshair;
+  }
+  
+  .grid-cell:hover {
+    stroke: white;
+    stroke-width: 1.5px;
+  }
+  
+  .legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .swatch {
+    display: inline-block;
+    width: 20px;
+    height: 3px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  
+  .swatch.hist { background: #444441; }
+  .swatch.s245 { background: #ba7517; }
+  .swatch.s585 { background: #a32d2d; }
+  
+  .tt-block {
+    margin-top: 0.4rem;
+    padding-left: 0.5rem;
+  }
+  
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .coastal {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
