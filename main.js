@@ -52,7 +52,7 @@ function getVal(county, m, i) {
 }
 
 function colorOf(v, m) {
-  if (v === null) return '#ccc';
+  if (v === null) return 'rgba(190,235,255,0.22)';
   return SCALES[m].fn(v);
 }
 
@@ -83,7 +83,7 @@ function render() {
       const d = d3.select(this).datum();
       const name = d.properties.name;
       const cd = countyData.counties[name];
-      if (!cd) return '#ccc';
+      if (!cd) return 'rgba(190,235,255,0.42)';
       return colorOf(getVal(cd, mode, di), mode);
     });
 
@@ -115,10 +115,10 @@ function buildMap(countiesGeoJSON) {
   const SP_IH = SP_H - SP_M.top  - SP_M.bottom;
 
   sidePanel.innerHTML =
-    '<div id="sp-title" style="font-size:11px;font-weight:700;color:#333;padding:6px 8px 2px;"></div>' +
+    '<div id="sp-title" style="font-size:11px;font-weight:700;color:#eaf8ff;padding:6px 8px 2px;"></div>' +
     '<svg id="sp-svg" width="' + SP_W + '" height="' + SP_H + '" style="display:block;overflow:visible;"></svg>' +
     '<div id="sp-legend" style="padding:4px 8px 6px;font-size:9px;line-height:1.7;"></div>' +
-    '<div id="sp-hint" style="padding:0 8px 6px;font-size:9px;color:#aaa;">Click a county to pin it. Click again to remove.</div>';
+    '<div id="sp-hint" style="padding:0 8px 6px;font-size:9px;color:#89a6b7;">Click a county to pin it. Click again to remove.</div>';
 
   const spSvg = d3.select('#sp-svg');
   const spG   = spSvg.append('g').attr('transform', 'translate(' + SP_M.left + ',' + SP_M.top + ')');
@@ -128,7 +128,7 @@ function buildMap(countiesGeoJSON) {
   const spGridG  = spG.append('g');
   const spYearG  = spG.append('line')
     .attr('y1', 0).attr('y2', SP_IH)
-    .attr('stroke', '#555').attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0);
+    .attr('stroke', 'rgba(234,248,255,0.72)').attr('stroke-width', 1).attr('stroke-dasharray', '3,2').attr('opacity', 0);
   const spLinesG = spG.append('g');
   const spHoverG = spG.append('g');
 
@@ -154,13 +154,13 @@ function buildMap(countiesGeoJSON) {
   function buildSpAxes() {
     ySp = d3.scaleLinear().domain(MODE_YDOMAIN[mode]).range([SP_IH, 0]);
     spXAxisG.call(d3.axisBottom(xSp).ticks(7).tickFormat(d3.format('d')))
-      .call(g => g.select('.domain').attr('stroke','#ccc'))
-      .call(g => g.selectAll('line').attr('stroke','#ccc'))
-      .call(g => g.selectAll('text').attr('fill','#999').style('font-size','8px'));
+      .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.42)'))
+      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.42)'))
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','8px'));
     spYAxisG.call(d3.axisLeft(ySp).ticks(5).tickFormat(d => d + '°'))
-      .call(g => g.select('.domain').attr('stroke','#ccc'))
-      .call(g => g.selectAll('line').attr('stroke','#ccc'))
-      .call(g => g.selectAll('text').attr('fill','#999').style('font-size','8px'));
+      .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.42)'))
+      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.42)'))
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','8px'));
     const yDom = MODE_YDOMAIN[mode];
     const step = (yDom[1] - yDom[0]) / 5;
     spGridG.selectAll('line').remove();
@@ -169,7 +169,7 @@ function buildMap(countiesGeoJSON) {
       .join('line')
       .attr('x1', 0).attr('x2', SP_IW)
       .attr('y1', t => ySp(t)).attr('y2', t => ySp(t))
-      .attr('stroke', '#f0f0f0').attr('stroke-width', 0.8);
+      .attr('stroke', 'rgba(190,235,255,0.10)').attr('stroke-width', 0.8);
     document.getElementById('sp-title').textContent = SCALES[mode].title + '  ·  1950–2019';
   }
   buildSpAxes();
@@ -229,7 +229,7 @@ function buildMap(countiesGeoJSON) {
     leg.innerHTML = Array.from(selectedCounties.entries()).map(([name, color]) =>
       '<div style="display:flex;align-items:center;gap:5px;">' +
       '<span style="display:inline-block;width:16px;height:3px;background:' + color + ';border-radius:2px;flex-shrink:0;"></span>' +
-      '<span style="color:#444;">' + name + '</span>' +
+      '<span style="color:#dceff8;">' + name + '</span>' +
       '</div>'
     ).join('');
   }
@@ -244,7 +244,7 @@ function buildMap(countiesGeoJSON) {
       .attr('fill', d => {
         const name = d.properties.name;
         const cd = countyData.counties[name];
-        if (!cd) return '#ccc';
+        if (!cd) return 'rgba(190,235,255,0.42)';
         return colorOf(getVal(cd, mode, di), mode);
       })
       .attr('stroke', 'rgba(255,255,255,0.5)')
@@ -268,7 +268,7 @@ function buildMap(countiesGeoJSON) {
            <span style="color:#8B0000;">Max high: ${hot}</span><br>
            <span style="color:#003080;">Min low:  ${cold}</span><br>
            <span style="color:#5a0060;">Range:    ${range}</span>
-           <hr style="margin:4px 0;border:none;border-top:1px solid #eee;">
+           <hr style="margin:4px 0;border:none;border-top:1px solid rgba(190,235,255,0.16);">
            <strong>${SCALES[mode].title}: ${vStr}</strong>`;
 
         const rect = mapWrap.getBoundingClientRect();
@@ -279,7 +279,7 @@ function buildMap(countiesGeoJSON) {
         floatLabel.style.left = lx + 'px';
         floatLabel.style.top  = ly + 'px';
 
-        d3.select(this).attr('stroke', '#333').attr('stroke-width', 1.5);
+        d3.select(this).attr('stroke', '#ffffff').attr('stroke-width', 1.5);
 
         spHoverG.selectAll('*').remove();
         if (!selectedCounties.has(name)) {
@@ -292,7 +292,7 @@ function buildMap(countiesGeoJSON) {
           spHoverG.append('path')
             .attr('d', lineGen(vals))
             .attr('fill', 'none')
-            .attr('stroke', '#999')
+            .attr('stroke', 'rgba(212,232,242,0.72)')
             .attr('stroke-width', 1.5)
             .attr('stroke-dasharray', '5,3')
             .attr('opacity', 0.7);
@@ -300,7 +300,7 @@ function buildMap(countiesGeoJSON) {
           if (v2 !== null) {
             spHoverG.append('circle')
               .attr('cx', xSp(YEARS[di])).attr('cy', ySp(v2))
-              .attr('r', 3).attr('fill', '#999').attr('stroke', '#fff').attr('stroke-width', 1);
+              .attr('r', 3).attr('fill', 'rgba(212,232,242,0.72)').attr('stroke', '#fff').attr('stroke-width', 1);
           }
           document.getElementById('sp-hint').textContent = name + ' County — click to pin';
         } else {
@@ -431,14 +431,14 @@ const COLORS = {
   g.append('text')
     .attr('x', W / 2).attr('y', H + 38)
     .attr('text-anchor', 'middle')
-    .attr('font-size', '12px').attr('fill', '#888780')
+    .attr('font-size', '12px').attr('fill', '#9bb6c5')
     .text('Year');
 
   g.append('text')
     .attr('transform', 'rotate(-90)')
     .attr('x', -H / 2).attr('y', -42)
     .attr('text-anchor', 'middle')
-    .attr('font-size', '12px').attr('fill', '#888780')
+    .attr('font-size', '12px').attr('fill', '#9bb6c5')
     .text('Temperature (°C)');
 
   g.append('line')
@@ -452,7 +452,7 @@ const COLORS = {
     .text('projections →');
 
   const hoverLine = g.append('line')
-    .attr('stroke', '#b4b2a9')
+    .attr('stroke', 'rgba(190,235,255,0.40)')
     .attr('stroke-width', 1)
     .attr('y1', 0).attr('y2', H)
     .attr('opacity', 0)
@@ -612,31 +612,31 @@ const COLORS = {
 
   hSvg.append('g').attr('transform', `translate(0,${hH})`)
     .call(d3.axisBottom(xH).ticks(12).tickFormat(d3.format('d')))
-    .call(g => g.select('.domain').attr('stroke','#ddd'))
+    .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.32)'))
     .call(g => g.selectAll('line').remove())
-    .call(g => g.selectAll('text').attr('fill','#bbb').style('font-size','10px'));
+    .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','10px'));
 
   hSvg.append('g')
     .call(d3.axisLeft(yH).ticks(5).tickFormat(d => Math.round(d * 100) + '%'))
     .call(g => g.select('.domain').remove())
-    .call(g => g.selectAll('line').attr('stroke','#f0f0f0').attr('x2',hW))
-    .call(g => g.selectAll('text').attr('fill','#bbb').style('font-size','10px'));
+    .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.10)').attr('x2',hW))
+    .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','10px'));
 
   const coastlineGen = d3.line().x((d, i) => xH(years[i])).y(d => yH(d)).curve(d3.curveBasis);
   const sstNorm = sstVals.map(v => norm(v, sstVals));
   const slhNorm = slhVals.map(v => norm(v, slhVals));
   const prNorm = precVals.map(v => norm(v, precVals));
 
-  hSvg.append('path').datum(sstNorm).attr('fill','none').attr('stroke','#1a5276').attr('stroke-width',2).attr('d',coastlineGen);
-  hSvg.append('path').datum(slhNorm).attr('fill','none').attr('stroke','#1a8cad').attr('stroke-width',1.6).attr('opacity',0.85).attr('d',coastlineGen);
-  hSvg.append('path').datum(prNorm).attr('fill','none').attr('stroke','#2e7d32').attr('stroke-width',1.6).attr('opacity',0.85).attr('d',coastlineGen);
-  hSvg.append('line').attr('x1',0).attr('x2',hW).attr('y1',yH(0.5)).attr('y2',yH(0.5)).attr('stroke','#ccc').attr('stroke-dasharray','4,3');
+  hSvg.append('path').datum(sstNorm).attr('fill','none').attr('stroke','#57c8ff').attr('stroke-width',2).attr('d',coastlineGen);
+  hSvg.append('path').datum(slhNorm).attr('fill','none').attr('stroke','#56f1d4').attr('stroke-width',1.6).attr('opacity',0.85).attr('d',coastlineGen);
+  hSvg.append('path').datum(prNorm).attr('fill','none').attr('stroke','#9ee493').attr('stroke-width',1.6).attr('opacity',0.85).attr('d',coastlineGen);
+  hSvg.append('line').attr('x1',0).attr('x2',hW).attr('y1',yH(0.5)).attr('y2',yH(0.5)).attr('stroke','rgba(190,235,255,0.42)').attr('stroke-dasharray','4,3');
 
-  const selLine = hSvg.append('line').attr('y1',0).attr('y2',hH).attr('stroke','#333').attr('stroke-width',1.5).attr('stroke-dasharray','3,2');
+  const selLine = hSvg.append('line').attr('y1',0).attr('y2',hH).attr('stroke','#ffffff').attr('stroke-width',1.5).attr('stroke-dasharray','3,2');
   const dots = {
-    sst: hSvg.append('circle').attr('r',5).attr('fill','#fff').attr('stroke','#1a5276').attr('stroke-width',2),
-    slh: hSvg.append('circle').attr('r',4).attr('fill','#fff').attr('stroke','#1a8cad').attr('stroke-width',2),
-    pr: hSvg.append('circle').attr('r',4).attr('fill','#fff').attr('stroke','#2e7d32').attr('stroke-width',2)
+    sst: hSvg.append('circle').attr('r',5).attr('fill','#fff').attr('stroke','#57c8ff').attr('stroke-width',2),
+    slh: hSvg.append('circle').attr('r',4).attr('fill','#fff').attr('stroke','#56f1d4').attr('stroke-width',2),
+    pr: hSvg.append('circle').attr('r',4).attr('fill','#fff').attr('stroke','#9ee493').attr('stroke-width',2)
   };
   const selLabel = hSvg.append('text').attr('text-anchor','middle').attr('fill','#444').style('font-size','10px').style('font-weight','600');
 
