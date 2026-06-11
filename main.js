@@ -661,6 +661,76 @@ const COLORS = {
   };
   const selLabel = hSvg.append('text').attr('text-anchor','middle').attr('fill','#444').style('font-size','10px').style('font-weight','600');
 
+
+  const tm = { top: 18, right: 22, bottom: 36, left: 52 };
+  const tW = 860 - tm.left - tm.right;
+  const tH = 240 - tm.top - tm.bottom;
+  const tSvg = d3.select('#tempTrendSvg').append('g').attr('transform', `translate(${tm.left},${tm.top})`);
+  const xT = d3.scaleLinear().domain(d3.extent(years)).range([0, tW]);
+  const yT = d3.scaleLinear()
+    .domain(d3.extent(sstVals))
+    .nice()
+    .range([tH, 0]);
+
+  tSvg.append('g').attr('transform', `translate(0,${tH})`)
+    .call(d3.axisBottom(xT).ticks(8).tickFormat(d3.format('d')))
+    .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.34)'))
+    .call(g => g.selectAll('line').remove())
+    .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.74)').style('font-size','10px'));
+
+  tSvg.append('g')
+    .call(d3.axisLeft(yT).ticks(5).tickFormat(d => d.toFixed(1) + '°'))
+    .call(g => g.select('.domain').remove())
+    .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.10)').attr('x2',tW))
+    .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.74)').style('font-size','10px'));
+
+  const tempLine = d3.line()
+    .x(d => xT(d.year))
+    .y(d => yT(d.val))
+    .curve(d3.curveCatmullRom.alpha(0.4));
+
+  tSvg.append('path')
+    .datum(sstData)
+    .attr('fill','none')
+    .attr('stroke','#56f1d4')
+    .attr('stroke-width',3)
+    .attr('stroke-linecap','round')
+    .attr('stroke-linejoin','round')
+    .attr('d',tempLine);
+
+  tSvg.append('line')
+    .attr('x1',0).attr('x2',tW)
+    .attr('y1',yT(sstMean)).attr('y2',yT(sstMean))
+    .attr('stroke','rgba(255,209,102,0.55)')
+    .attr('stroke-dasharray','5,5');
+
+  tSvg.append('text')
+    .attr('x',tW)
+    .attr('y',yT(sstMean) - 8)
+    .attr('text-anchor','end')
+    .attr('fill','rgba(255,209,102,0.82)')
+    .style('font-size','10px')
+    .style('font-weight','800')
+    .text('average');
+
+  const tempSelLine = tSvg.append('line')
+    .attr('y1',0).attr('y2',tH)
+    .attr('stroke','#ffffff')
+    .attr('stroke-width',1.4)
+    .attr('stroke-dasharray','3,3');
+
+  const tempDot = tSvg.append('circle')
+    .attr('r',6)
+    .attr('fill','#ffffff')
+    .attr('stroke','#56f1d4')
+    .attr('stroke-width',2.5);
+
+  const tempValue = tSvg.append('text')
+    .attr('text-anchor','middle')
+    .attr('fill','#f2fbff')
+    .style('font-size','11px')
+    .style('font-weight','900');
+
   function update(yr) {
     const i = years.indexOf(yr);
     if (i === -1) return;
@@ -694,6 +764,14 @@ const COLORS = {
     dots.slh.attr('cx', cx).attr('cy', yH(slhNorm[i]));
     dots.pr.attr('cx', cx).attr('cy', yH(prNorm[i]));
     selLabel.attr('x', cx).attr('y', Math.min(yH(sstNorm[i]), yH(slhNorm[i]), yH(prNorm[i])) - 10).text(yr);
+
+    const tx = xT(yr);
+    tempSelLine.attr('x1', tx).attr('x2', tx);
+    tempDot.attr('cx', tx).attr('cy', yT(sst));
+    tempValue
+      .attr('x', tx)
+      .attr('y', yT(sst) - 13)
+      .text(sst.toFixed(1) + '°C');
   }
 
   document.getElementById('yearSlider').addEventListener('input', e => update(+e.target.value));
