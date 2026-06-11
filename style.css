@@ -1440,3 +1440,158 @@ h1, h2, h3 { color: var(--color-text-primary); letter-spacing: -0.055em; line-he
     font-size: 0.98rem;
   }
 }
+
+/* Chapter-card bridge redesign: softer narrative transition instead of hard full-width banner */
+.bridge {
+  position: relative;
+  max-width: min(1220px, calc(100% - 2rem));
+  margin: clamp(3rem, 6vw, 5rem) auto;
+  padding: clamp(1.1rem, 2.5vw, 1.6rem);
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.bridge::before {
+  content: "";
+  position: absolute;
+  inset: -2.2rem -1rem;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 42px;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(86, 241, 212, 0.13), transparent 22rem),
+    radial-gradient(circle at 86% 70%, rgba(255, 209, 102, 0.08), transparent 24rem);
+  filter: blur(2px);
+  opacity: 0.95;
+  animation: none;
+}
+
+.bridge::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 50%;
+  z-index: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(86, 241, 212, 0.24), rgba(255, 209, 102, 0.16), transparent);
+  transform: rotate(-4deg);
+  opacity: 0.75;
+}
+
+.bridge-inner {
+  position: relative;
+  z-index: 1;
+  max-width: none;
+  min-height: 380px;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.36fr) minmax(0, 1fr);
+  gap: clamp(1.4rem, 3vw, 3rem);
+  align-items: center;
+  padding: clamp(2rem, 4.2vw, 4rem);
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 38px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025) 42%, rgba(86, 241, 212, 0.035)),
+    radial-gradient(circle at 0% 0%, rgba(86, 241, 212, 0.11), transparent 18rem),
+    radial-gradient(circle at 100% 100%, rgba(255, 209, 102, 0.08), transparent 18rem),
+    rgba(5, 16, 29, 0.58);
+  box-shadow: 0 28px 90px rgba(0,0,0,0.26);
+  backdrop-filter: blur(22px) saturate(1.16);
+  overflow: hidden;
+}
+
+.bridge-inner::before {
+  content: "STATE → COAST";
+  width: 8.6rem;
+  min-height: 3.2rem;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(190, 235, 255, 0.18);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(86, 241, 212, 0.16), rgba(255, 209, 102, 0.08)),
+    rgba(3, 14, 25, 0.46);
+  color: var(--color-teal);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-align: center;
+  box-shadow: 0 0 0 14px rgba(86, 241, 212, 0.03);
+}
+
+.bridge-inner::after {
+  content: "";
+  position: absolute;
+  right: -8rem;
+  top: -6rem;
+  width: 28rem;
+  height: 28rem;
+  border: 1px solid rgba(86, 241, 212, 0.08);
+  border-radius: 50%;
+  box-shadow:
+    -6rem 8rem 0 rgba(255, 209, 102, 0.035),
+    -12rem 14rem 0 rgba(87, 200, 255, 0.025);
+  pointer-events: none;
+}
+
+.bridge .section-kicker {
+  grid-column: 2;
+  margin-bottom: 0.9rem;
+}
+
+.bridge h2 {
+  grid-column: 2;
+  max-width: 10.4em;
+  margin: 0 0 1.2rem;
+  font-size: clamp(2.6rem, 5vw, 5.2rem);
+  text-wrap: balance;
+}
+
+.bridge p {
+  grid-column: 2;
+  max-width: 760px;
+  margin-bottom: 0;
+  color: rgba(220, 235, 245, 0.82);
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
+  line-height: 1.62;
+}
+
+.bridge p + p {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(190, 235, 255, 0.10);
+}
+
+@media (max-width: 900px) {
+  .bridge {
+    max-width: calc(100% - 1.5rem);
+    margin: 2.2rem auto;
+  }
+
+  .bridge-inner {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    padding: 1.35rem;
+    border-radius: 28px;
+  }
+
+  .bridge-inner::before {
+    width: fit-content;
+    min-height: 2.6rem;
+    font-size: 0.66rem;
+  }
+
+  .bridge .section-kicker,
+  .bridge h2,
+  .bridge p {
+    grid-column: 1;
+  }
+
+  .bridge h2 {
+    font-size: clamp(2.2rem, 9vw, 3.2rem);
+  }
+}
