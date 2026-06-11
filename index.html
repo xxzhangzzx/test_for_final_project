@@ -204,7 +204,6 @@
     </div>
   </section>
 
-
   <section class="section enso-section" id="enso">
     <div class="section-kicker">Pacific climate driver</div>
     <div class="section-heading-row enso-heading-row">
@@ -301,7 +300,6 @@
     </div>
   </section>
 
-
   <section class="section coastal" id="coast">
     <div class="section-kicker">Coastal dashboard</div>
     <div class="section-heading-row">
@@ -359,30 +357,7 @@
         </div>
       </div>
 
-      <div class="history-card temp-trend-card">
-        <div class="viz-title-row">
-          <div>
-            <p class="chart-label">Annual temperature trend</p>
-            <h3>Coastal ocean temperature · 1950–2014</h3>
-          </div>
-          <span class="mini-legend-line">selected year</span>
-        </div>
-        <svg id="tempTrendSvg" width="100%" viewBox="0 0 860 240"></svg>
-      </div>
-
-      <div class="history-card temp-trend-card land-temp-card">
-        <div class="viz-title-row">
-          <div>
-            <p class="chart-label">Land response</p>
-            <h3>San Diego land mean temperature · 1950–2014</h3>
-            <p class="chart-note">Placed below the ocean series so readers can compare how coastal conditions relate to temperature over land.</p>
-          </div>
-          <span class="mini-legend-line land-legend">selected year</span>
-        </div>
-        <svg id="landTempTrendSvg" width="100%" viewBox="0 0 860 240"></svg>
-      </div>
-
-      <div class="history-card">
+      <div class="history-card full-record-card">
         <div class="viz-title-row">
           <div>
             <p class="chart-label">Normalized record</p>
@@ -390,6 +365,37 @@
           </div>
         </div>
         <svg id="histSvg" width="100%" viewBox="0 0 860 220"></svg>
+      </div>
+
+      <div class="temp-compare-control">
+        <div>
+          <span class="metric-label">Ocean to land comparison</span>
+          <strong id="tempCompareYear">1997</strong>
+        </div>
+        <input type="range" min="1950" max="2014" value="1997" step="1" id="tempCompareSlider" aria-label="Select year for ocean and land temperature comparison">
+      </div>
+
+      <div class="history-card temp-trend-card">
+        <div class="viz-title-row">
+          <div>
+            <p class="chart-label">Coastal signal</p>
+            <h3>Coastal ocean temperature · 1950–2014</h3>
+          </div>
+          <span class="mini-legend-line">selected year</span>
+        </div>
+        <svg id="tempTrendSvg" width="100%" viewBox="0 0 860 200"></svg>
+      </div>
+
+      <div class="history-card temp-trend-card land-temp-card">
+        <div class="viz-title-row">
+          <div>
+            <p class="chart-label">Land response</p>
+            <h3>San Diego land mean temperature · 1950–2014</h3>
+            <p class="chart-note">Use the shared slider to compare whether ocean changes and land temperature move together in the selected year.</p>
+          </div>
+          <span class="mini-legend-line land-legend">selected year</span>
+        </div>
+        <svg id="landTempTrendSvg" width="100%" viewBox="0 0 860 200"></svg>
       </div>
     </div>
   </section>
@@ -447,7 +453,6 @@
       </p>
     </div>
   </section>
-
 
   <section class="section projection-section" id="future">
     <div class="section-kicker">Future pathways</div>
@@ -508,7 +513,6 @@
     </div>
   </section>
 </main>
-
 
 <script src="main.js"></script>
 </body>

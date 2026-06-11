@@ -662,10 +662,9 @@ const COLORS = {
   };
   const selLabel = hSvg.append('text').attr('text-anchor','middle').attr('fill','#444').style('font-size','10px').style('font-weight','600');
 
-
   const tm = { top: 18, right: 22, bottom: 36, left: 52 };
   const tW = 860 - tm.left - tm.right;
-  const tH = 240 - tm.top - tm.bottom;
+  const tH = 200 - tm.top - tm.bottom;
   const tSvg = d3.select('#tempTrendSvg').append('g').attr('transform', `translate(${tm.left},${tm.top})`);
   const xT = d3.scaleLinear().domain(d3.extent(years)).range([0, tW]);
   const yT = d3.scaleLinear()
@@ -732,14 +731,13 @@ const COLORS = {
     .style('font-size','11px')
     .style('font-weight','900');
 
-
   const landYears = landTempData.map(d => d.year);
   const landVals = landTempData.map(d => d.val);
   const landMean = d3.mean(landVals);
 
   const lm = { top: 18, right: 22, bottom: 36, left: 52 };
   const lW = 860 - lm.left - lm.right;
-  const lH = 240 - lm.top - lm.bottom;
+  const lH = 200 - lm.top - lm.bottom;
   const lSvg = d3.select('#landTempTrendSvg').append('g').attr('transform', `translate(${lm.left},${lm.top})`);
   const xL = d3.scaleLinear().domain(d3.extent(landYears)).range([0, lW]);
   const yL = d3.scaleLinear().domain(d3.extent(landVals)).nice().range([lH, 0]);
@@ -808,6 +806,12 @@ const COLORS = {
     if (i === -1) return;
     const sst = sstVals[i], slh = slhVals[i], prec = precVals[i];
     document.getElementById('yearDisplay').textContent = yr;
+    const tempCompareYear = document.getElementById('tempCompareYear');
+    const tempCompareSlider = document.getElementById('tempCompareSlider');
+    const yearSlider = document.getElementById('yearSlider');
+    if (tempCompareYear) tempCompareYear.textContent = yr;
+    if (tempCompareSlider && +tempCompareSlider.value !== yr) tempCompareSlider.value = yr;
+    if (yearSlider && +yearSlider.value !== yr) yearSlider.value = yr;
 
     const sstDiff = sst - sstMean;
     document.getElementById('gSst').innerHTML = sst.toFixed(1) + '<span class="gauge-unit">°C</span>';
@@ -858,15 +862,16 @@ const COLORS = {
     }
   }
 
-  document.getElementById('yearSlider').addEventListener('input', e => update(+e.target.value));
+  const yearSliderInput = document.getElementById('yearSlider');
+  const tempCompareSliderInput = document.getElementById('tempCompareSlider');
+  if (yearSliderInput) yearSliderInput.addEventListener('input', e => update(+e.target.value));
+  if (tempCompareSliderInput) tempCompareSliderInput.addEventListener('input', e => update(+e.target.value));
   update(1997);
 
-/* ---- Added interactive features: progress, autoplay, scanner, comparison, particles, reveal ---- */
 (function() {
   const root = document.documentElement;
 
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
-
 
   const progressFill = document.getElementById('scroll-progress-fill');
   const progressStops = Array.from(document.querySelectorAll('.progress-stops a'));

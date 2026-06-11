@@ -1,10 +1,8 @@
-<style>
-#pac { font-family: var(--font-sans); }
-.pb { padding: 5px 13px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); border-radius: 20px; cursor: pointer; }
-.pb.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
-.ptip { position: absolute; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 8px; padding: 8px 12px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.15s; max-width: 160px; }
-.ptip.show { opacity: 1; }
-</style>
+<style>#pac{font-family:var(--font-sans)}
+.pb{padding:5px 13px;font-size:12px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);border-radius:20px;cursor:pointer}
+.pb.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.ptip{position:absolute;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:8px 12px;font-size:12px;pointer-events:none;opacity:0;transition:opacity 0.15s;max-width:160px}
+.ptip.show{opacity:1}</style>
 
 <div id="pac">
   <h2 class="sr-only">Pacific Ocean sea surface temperature and ocean current vector map from 1950 to 2014, showing El Niño and La Niña patterns</h2>
@@ -39,8 +37,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-<script>
-const sstRaw=[{y:1950,v:18.847788},{y:1951,v:18.955421},{y:1952,v:18.911663},{y:1953,v:18.797586},{y:1954,v:18.783888},{y:1955,v:18.354391},{y:1956,v:18.415876},{y:1957,v:18.270643},{y:1958,v:18.844719},{y:1959,v:18.138975},{y:1960,v:19.025873},{y:1961,v:18.26248},{y:1962,v:18.982752},{y:1963,v:18.336794},{y:1964,v:18.133081},{y:1965,v:17.991058},{y:1966,v:18.570555},{y:1967,v:17.738407},{y:1968,v:18.395079},{y:1969,v:18.200417},{y:1970,v:18.067045},{y:1971,v:18.828825},{y:1972,v:18.723267},{y:1973,v:18.692635},{y:1974,v:18.499609},{y:1975,v:18.915903},{y:1976,v:18.428335},{y:1977,v:18.136103},{y:1978,v:19.253567},{y:1979,v:18.556625},{y:1980,v:18.631596},{y:1981,v:18.473883},{y:1982,v:17.918966},{y:1983,v:18.170456},{y:1984,v:18.45537},{y:1985,v:19.035368},{y:1986,v:18.962555},{y:1987,v:18.964952},{y:1988,v:17.967646},{y:1989,v:18.49156},{y:1990,v:18.749702},{y:1991,v:18.34363},{y:1992,v:17.705574},{y:1993,v:17.726017},{y:1994,v:18.80072},{y:1995,v:18.560776},{y:1996,v:18.648369},{y:1997,v:19.751425},{y:1998,v:18.679195},{y:1999,v:18.656536},{y:2000,v:18.990366},{y:2001,v:19.085474},{y:2002,v:18.703676},{y:2003,v:19.127237},{y:2004,v:19.653294},{y:2005,v:19.419685},{y:2006,v:19.274931},{y:2007,v:18.837313},{y:2008,v:19.20241},{y:2009,v:18.93244},{y:2010,v:18.427925},{y:2011,v:19.206192},{y:2012,v:18.91688},{y:2013,v:18.973394},{y:2014,v:19.437723}];
+<script>const sstRaw=[{y:1950,v:18.847788},{y:1951,v:18.955421},{y:1952,v:18.911663},{y:1953,v:18.797586},{y:1954,v:18.783888},{y:1955,v:18.354391},{y:1956,v:18.415876},{y:1957,v:18.270643},{y:1958,v:18.844719},{y:1959,v:18.138975},{y:1960,v:19.025873},{y:1961,v:18.26248},{y:1962,v:18.982752},{y:1963,v:18.336794},{y:1964,v:18.133081},{y:1965,v:17.991058},{y:1966,v:18.570555},{y:1967,v:17.738407},{y:1968,v:18.395079},{y:1969,v:18.200417},{y:1970,v:18.067045},{y:1971,v:18.828825},{y:1972,v:18.723267},{y:1973,v:18.692635},{y:1974,v:18.499609},{y:1975,v:18.915903},{y:1976,v:18.428335},{y:1977,v:18.136103},{y:1978,v:19.253567},{y:1979,v:18.556625},{y:1980,v:18.631596},{y:1981,v:18.473883},{y:1982,v:17.918966},{y:1983,v:18.170456},{y:1984,v:18.45537},{y:1985,v:19.035368},{y:1986,v:18.962555},{y:1987,v:18.964952},{y:1988,v:17.967646},{y:1989,v:18.49156},{y:1990,v:18.749702},{y:1991,v:18.34363},{y:1992,v:17.705574},{y:1993,v:17.726017},{y:1994,v:18.80072},{y:1995,v:18.560776},{y:1996,v:18.648369},{y:1997,v:19.751425},{y:1998,v:18.679195},{y:1999,v:18.656536},{y:2000,v:18.990366},{y:2001,v:19.085474},{y:2002,v:18.703676},{y:2003,v:19.127237},{y:2004,v:19.653294},{y:2005,v:19.419685},{y:2006,v:19.274931},{y:2007,v:18.837313},{y:2008,v:19.20241},{y:2009,v:18.93244},{y:2010,v:18.427925},{y:2011,v:19.206192},{y:2012,v:18.91688},{y:2013,v:18.973394},{y:2014,v:19.437723}];
 const sstMean=d3.mean(sstRaw,d=>d.v);
 
 const GRID_LONS=[-180,-170,-160,-150,-140,-130,-120,-110,-100,-90,-80],
@@ -256,5 +253,4 @@ document.querySelectorAll(".pb").forEach(b=>b.addEventListener("click",function(
   fullRender();
 }));
 
-fullRender();
-</script>
+fullRender();</script>
