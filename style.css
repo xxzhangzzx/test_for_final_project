@@ -2628,3 +2628,141 @@ input[type="range"]::-webkit-slider-thumb {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
+
+
+/* Responsive statewide fix: prevent graph/story overlap when browser is not full screen */
+.scrolly {
+  max-width: min(1680px, calc(100% - 2rem)) !important;
+  grid-template-columns: minmax(0, 1.55fr) minmax(460px, 0.72fr) !important;
+  gap: clamp(1rem, 1.7vw, 1.8rem) !important;
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+.sticky-visual,
+.scroll-text {
+  min-width: 0 !important;
+}
+
+.scroll-text {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.map-layout {
+  grid-template-columns: minmax(560px, 1fr) minmax(235px, 270px) !important;
+  gap: 0.9rem !important;
+  align-items: stretch !important;
+}
+
+#map-wrap {
+  min-width: 560px !important;
+  height: clamp(540px, 65vh, 730px) !important;
+  min-height: 540px !important;
+  overflow: hidden !important;
+}
+
+#ca-svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform: scale(1.16) translateY(0.5%) !important;
+  transform-origin: center center !important;
+}
+
+.sidebar {
+  max-width: 270px !important;
+  min-width: 235px !important;
+  min-height: clamp(540px, 65vh, 730px) !important;
+  padding: 0.82rem 0.86rem !important;
+}
+
+#sp-svg {
+  width: 100% !important;
+  height: auto !important;
+}
+
+.scan-grid {
+  grid-template-columns: 1fr !important;
+}
+
+/* When there is not enough horizontal space, stack the story under the map.
+   This removes the overlap shown in the screenshot and makes the text column wider. */
+@media (max-width: 1520px) {
+  .scrolly {
+    grid-template-columns: 1fr !important;
+    max-width: min(1220px, calc(100% - 2rem)) !important;
+  }
+
+  .sticky-visual {
+    position: static !important;
+    top: auto !important;
+  }
+
+  .scroll-text {
+    position: static !important;
+    top: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+  }
+
+  .step {
+    min-height: auto !important;
+  }
+
+  .step::after {
+    display: none !important;
+  }
+
+  .step h3 {
+    font-size: clamp(1.45rem, 2.1vw, 2.1rem) !important;
+  }
+
+  .step p {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+  }
+}
+
+@media (max-width: 1120px) {
+  .map-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  #map-wrap {
+    min-width: 0 !important;
+    height: clamp(430px, 63vh, 610px) !important;
+    min-height: 430px !important;
+  }
+
+  #ca-svg {
+    transform: scale(1.04) !important;
+  }
+
+  .sidebar {
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: auto !important;
+  }
+
+  .scan-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .scroll-text {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .scrolly {
+    max-width: 100% !important;
+  }
+
+  .scroll-text {
+    padding: 0.8rem !important;
+  }
+}
