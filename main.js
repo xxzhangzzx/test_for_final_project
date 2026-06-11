@@ -109,14 +109,14 @@ function buildMap(countiesGeoJSON) {
   const sidePanel = document.getElementById('hovered-panel');
   sidePanel.style.cssText = 'padding:0;';
 
-  const SP_W = 210, SP_H = 160;
-  const SP_M = { top: 14, right: 10, bottom: 24, left: 34 };
+  const SP_W = 300, SP_H = 196;
+  const SP_M = { top: 14, right: 14, bottom: 28, left: 40 };
   const SP_IW = SP_W - SP_M.left - SP_M.right;
   const SP_IH = SP_H - SP_M.top  - SP_M.bottom;
 
   sidePanel.innerHTML =
     '<div id="sp-title" style="font-size:11px;font-weight:700;color:#eaf8ff;padding:6px 8px 2px;"></div>' +
-    '<svg id="sp-svg" width="' + SP_W + '" height="' + SP_H + '" style="display:block;overflow:visible;"></svg>' +
+    '<svg id="sp-svg" width="' + SP_W + '" height="' + SP_H + '" viewBox="0 0 ' + SP_W + ' ' + SP_H + '" preserveAspectRatio="xMidYMid meet" style="display:block;overflow:visible;width:100%;height:auto;"></svg>' +
     '<div id="sp-legend" style="padding:4px 8px 6px;font-size:9px;line-height:1.7;"></div>' +
     '<div id="sp-hint" style="padding:0 8px 6px;font-size:9px;color:#89a6b7;">Click a county to pin it. Click again to remove.</div>';
 
@@ -156,11 +156,11 @@ function buildMap(countiesGeoJSON) {
     spXAxisG.call(d3.axisBottom(xSp).ticks(7).tickFormat(d3.format('d')))
       .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.42)'))
       .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.42)'))
-      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','8px'));
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','10px'));
     spYAxisG.call(d3.axisLeft(ySp).ticks(5).tickFormat(d => d + '°'))
       .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.42)'))
       .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.42)'))
-      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','8px'));
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.72)').style('font-size','10px'));
     const yDom = MODE_YDOMAIN[mode];
     const step = (yDom[1] - yDom[0]) / 5;
     spGridG.selectAll('line').remove();
@@ -769,74 +769,6 @@ const COLORS = {
     scanRange.textContent = '—';
     if (scanNote) scanNote.textContent = 'Hover a county to turn the map into a small climate scanner.';
   };
-
-  const compareSvg = d3.select('#city-compare-svg');
-  const compareCaption = document.getElementById('city-compare-caption');
-  let compareCounty = 'Los Angeles';
-
-  function countyVals(name) {
-    if (!countyData || !countyData.counties[name]) return [];
-    return YEARS.map((yr, i) => ({ year: yr, value: getVal(countyData.counties[name], mode, i) })).filter(d => d.value !== null);
-  }
-
-  window.updateCityCompare = function() {
-    if (!compareSvg.node() || !countyData) return;
-    const sd = countyVals('San Diego');
-    const other = countyVals(compareCounty);
-    if (!sd.length || !other.length) return;
-    compareSvg.selectAll('*').remove();
-
-    const W = 260, H = 150;
-    const m = { top: 12, right: 10, bottom: 28, left: 30 };
-    const x = d3.scaleLinear().domain([1950, 2019]).range([m.left, W - m.right]);
-    const all = sd.concat(other);
-    const y = d3.scaleLinear().domain(d3.extent(all, d => d.value)).nice().range([H - m.bottom, m.top]);
-    const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveCatmullRom.alpha(0.5));
-
-    compareSvg.append('g')
-      .attr('transform', `translate(0,${H - m.bottom})`)
-      .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format('d')))
-      .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.35)'))
-      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.25)'))
-      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','9px'));
-
-    compareSvg.append('g')
-      .attr('transform', `translate(${m.left},0)`)
-      .call(d3.axisLeft(y).ticks(4).tickFormat(d => d + '°'))
-      .call(g => g.select('.domain').remove())
-      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.18)').attr('x2', W - m.left - m.right))
-      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','9px'));
-
-    compareSvg.append('path').datum(sd).attr('d', line).attr('fill','none').attr('stroke','#56f1d4').attr('stroke-width',2.4);
-    compareSvg.append('path').datum(other).attr('d', line).attr('fill','none').attr('stroke','#ffd166').attr('stroke-width',2.1);
-
-    const sdNow = sd.find(d => d.year === YEARS[di]);
-    const otherNow = other.find(d => d.year === YEARS[di]);
-    compareSvg.append('line').attr('x1', x(YEARS[di])).attr('x2', x(YEARS[di])).attr('y1', m.top).attr('y2', H - m.bottom).attr('stroke','#fff').attr('stroke-width',1).attr('stroke-dasharray','3,3').attr('opacity',0.72);
-    if (sdNow) compareSvg.append('circle').attr('cx', x(sdNow.year)).attr('cy', y(sdNow.value)).attr('r', 4).attr('fill','#56f1d4').attr('stroke','#fff');
-    if (otherNow) compareSvg.append('circle').attr('cx', x(otherNow.year)).attr('cy', y(otherNow.value)).attr('r', 4).attr('fill','#ffd166').attr('stroke','#fff');
-
-    compareSvg.append('text').attr('x', m.left).attr('y', 10).attr('fill','#56f1d4').attr('font-size',9).attr('font-weight',800).text('San Diego');
-    compareSvg.append('text').attr('x', W - m.right).attr('y', 10).attr('text-anchor','end').attr('fill','#ffd166').attr('font-size',9).attr('font-weight',800).text(compareCounty === 'Inyo' ? 'Inland desert' : compareCounty);
-
-    const otherLabel = compareCounty === 'Inyo' ? 'Inland desert' : compareCounty;
-    if (compareCaption) compareCaption.textContent = 'San Diego vs ' + otherLabel + ' · ' + SCALES[mode].title + ' · selected year ' + YEARS[di] + '.';
-  };
-
-  document.querySelectorAll('.compare-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      compareCounty = btn.dataset.county;
-      document.querySelectorAll('.compare-btn').forEach(b => b.classList.toggle('active', b === btn));
-      window.updateCityCompare();
-    });
-  });
-
-  const waitForCompare = setInterval(() => {
-    if (countyData) {
-      clearInterval(waitForCompare);
-      window.updateCityCompare();
-    }
-  }, 250);
 
   const reveal = document.getElementById('reveal-card');
   if (reveal && 'IntersectionObserver' in window) {

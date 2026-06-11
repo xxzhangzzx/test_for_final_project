@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Climate Lens: San Diego</title>
-  <link rel="stylesheet" href="style.css?v=22" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 </head>
@@ -157,19 +157,6 @@
                 <div><span>Range</span><b id="scan-range">—</b></div>
               </div>
               <p id="scan-note">Hover a county to turn the map into a small climate scanner.</p>
-            </div>
-
-            <div class="compare-panel">
-              <span class="scan-eyebrow">City comparison</span>
-              <strong>San Diego vs California regions</strong>
-              <div class="compare-buttons" aria-label="Compare San Diego with another region">
-                <button class="compare-btn active" type="button" data-county="Los Angeles">Los Angeles</button>
-                <button class="compare-btn" type="button" data-county="San Francisco">San Francisco</button>
-                <button class="compare-btn" type="button" data-county="Sacramento">Sacramento</button>
-                <button class="compare-btn" type="button" data-county="Inyo">Inland desert</button>
-              </div>
-              <svg id="city-compare-svg" viewBox="0 0 260 150" aria-label="City comparison chart"></svg>
-              <p id="city-compare-caption">Compare San Diego with Los Angeles using the selected temperature mode.</p>
             </div>
           </aside>
         </div>
@@ -401,6 +388,6 @@
 </main>
 
 
-<script src="main.js?v=22"></script>
+<script src="main.js"></script>
 </body>
 </html>
