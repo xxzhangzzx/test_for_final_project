@@ -2256,116 +2256,23 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 
-/* Clean large California map fix: remove noisy annotation overlay and make map fill the card */
+/* Final fix: make California map larger and right graph smaller */
+.map-layout {
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 330px) !important;
+  gap: 1rem !important;
+  align-items: stretch !important;
+}
+
 #map-wrap {
   position: relative;
   isolation: isolate;
-  height: clamp(520px, 64vh, 700px);
-  padding: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-#map-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 48% 45%, rgba(86, 241, 212, 0.10), transparent 18rem),
-    radial-gradient(circle at 70% 76%, rgba(255, 177, 94, 0.09), transparent 18rem);
-  z-index: 0;
-}
-
-#ca-svg {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 620px);
-  height: min(100%, 660px);
-  transform: scale(1.28);
-  transform-origin: center center;
-  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.24));
-}
-
-.map-overlay,
-.map-callout,
-.city-pin,
-.map-compass,
-.map-scanline {
-  display: none !important;
-}
-
-.map-frame-labels {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.frame-chip {
-  position: absolute;
-  padding: 0.42rem 0.65rem;
-  border: 1px solid rgba(190, 235, 255, 0.14);
-  border-radius: 999px;
-  background: rgba(3, 14, 25, 0.62);
-  color: rgba(238, 250, 255, 0.78);
-  font-size: 0.66rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  backdrop-filter: blur(12px);
-}
-
-.coast-chip {
-  left: 1rem;
-  bottom: 1rem;
-}
-
-.inland-chip {
-  right: 1rem;
-  top: 1rem;
-}
-
-.sd-chip {
-  right: 1rem;
-  bottom: 1rem;
-  color: var(--color-teal);
-}
-
-@media (max-width: 1040px) {
-  #ca-svg {
-    transform: scale(1.12);
-  }
-}
-
-@media (max-width: 720px) {
-  #map-wrap {
-    height: clamp(420px, 60vh, 540px);
-  }
-
-  #ca-svg {
-    transform: scale(1.04);
-  }
-
-  .frame-chip {
-    display: none;
-  }
-}
-
-
-/* Balanced clean map version: keep the simple look but remove the empty feeling */
-#map-wrap {
-  position: relative;
-  isolation: isolate;
-  height: clamp(460px, 54vh, 590px);
-  padding: 0.45rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  height: clamp(480px, 56vh, 610px) !important;
+  min-height: 0 !important;
+  padding: 0.35rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
 }
 
 #map-wrap::before {
@@ -2373,97 +2280,128 @@ input[type="range"]::-webkit-slider-thumb {
   position: absolute;
   inset: 0;
   z-index: 0;
-  border-radius: inherit;
   pointer-events: none;
+  border-radius: inherit;
   background:
-    radial-gradient(circle at 35% 34%, rgba(86, 241, 212, 0.10), transparent 15rem),
-    radial-gradient(circle at 72% 70%, rgba(255, 177, 94, 0.10), transparent 17rem),
-    linear-gradient(180deg, rgba(7, 35, 54, 0.32), rgba(4, 15, 27, 0.68));
+    radial-gradient(circle at 35% 32%, rgba(86, 241, 212, 0.08), transparent 14rem),
+    radial-gradient(circle at 74% 74%, rgba(255, 177, 94, 0.08), transparent 16rem);
 }
 
 #ca-svg {
   position: relative;
   z-index: 1;
-  width: min(100%, 620px);
-  height: min(100%, 640px);
-  transform: scale(1.32) translate(-1%, 1%);
-  transform-origin: center center;
-  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.24));
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform: scale(1.44) translate(-0.5%, 1%) !important;
+  transform-origin: center center !important;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.22));
 }
 
-.map-overlay,
-.map-callout,
-.city-pin,
-.map-compass,
-.map-scanline,
-.map-frame-labels,
-.frame-chip {
-  display: none !important;
+.sidebar {
+  min-height: clamp(480px, 56vh, 610px) !important;
+  padding: 0.95rem 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
 }
 
-.map-mini-legend {
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 0.9rem;
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  gap: 0.9rem;
-  align-items: center;
-  padding: 0.48rem 0.7rem;
-  border: 1px solid rgba(190, 235, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(3, 14, 25, 0.62);
-  color: rgba(238, 250, 255, 0.72);
-  font-size: 0.66rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  backdrop-filter: blur(12px);
+.legend-block {
+  padding-top: 0 !important;
 }
 
-.mini-dot {
-  width: 0.52rem;
-  height: 0.52rem;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: -0.55rem;
-  box-shadow: 0 0 14px rgba(255,255,255,0.18);
+.leg-title {
+  font-size: 0.94rem !important;
+  margin-bottom: 0.55rem !important;
 }
 
-.mini-dot.coastal {
-  background: #fff3b0;
+#legend-bar {
+  width: 100% !important;
+  height: 12px !important;
 }
 
-.mini-dot.inland {
-  background: #ffbf5f;
+.leg-axis {
+  font-size: 0.7rem !important;
 }
 
-.mini-dot.desert {
-  background: #ff8841;
+#hovered-panel {
+  padding-top: 0.85rem !important;
+  min-height: 0 !important;
+}
+
+#sp-title {
+  font-size: 12px !important;
+  padding: 0 0 0.35rem !important;
+}
+
+#sp-svg {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+#sp-legend {
+  padding: 0.35rem 0 0.2rem !important;
+  font-size: 10px !important;
+  line-height: 1.45 !important;
+}
+
+#sp-hint {
+  padding: 0 0 0.2rem !important;
+  font-size: 10px !important;
+  line-height: 1.4 !important;
+}
+
+.scan-panel {
+  margin-top: 0.85rem !important;
+  padding: 0.85rem !important;
+}
+
+.scan-panel strong {
+  font-size: 0.88rem !important;
+}
+
+.scan-grid {
+  gap: 0.4rem !important;
+  margin: 0.7rem 0 0.65rem !important;
+}
+
+.scan-grid div {
+  padding: 0.48rem 0.42rem !important;
+}
+
+.scan-grid span {
+  font-size: 0.55rem !important;
+}
+
+.scan-grid b {
+  font-size: 0.78rem !important;
+}
+
+@media (max-width: 1180px) {
+  .map-layout {
+    grid-template-columns: minmax(0, 1.35fr) minmax(270px, 315px) !important;
+  }
+  #ca-svg {
+    transform: scale(1.34) translate(-0.5%, 1%) !important;
+  }
 }
 
 @media (max-width: 1040px) {
+  .map-layout {
+    grid-template-columns: 1fr !important;
+  }
+
   #map-wrap {
-    height: clamp(420px, 60vh, 560px);
+    height: clamp(420px, 64vh, 580px) !important;
   }
 
   #ca-svg {
-    transform: scale(1.15);
-  }
-}
-
-@media (max-width: 720px) {
-  #map-wrap {
-    height: clamp(390px, 58vh, 500px);
+    transform: scale(1.1) !important;
   }
 
-  #ca-svg {
-    transform: scale(1.04);
-  }
-
-  .map-mini-legend {
-    display: none;
+  .sidebar {
+    min-height: auto !important;
   }
 }

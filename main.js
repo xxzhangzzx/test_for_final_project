@@ -109,8 +109,8 @@ function buildMap(countiesGeoJSON) {
   const sidePanel = document.getElementById('hovered-panel');
   sidePanel.style.cssText = 'padding:0;';
 
-  const SP_W = 300, SP_H = 196;
-  const SP_M = { top: 14, right: 14, bottom: 28, left: 40 };
+  const SP_W = 248, SP_H = 168;
+  const SP_M = { top: 14, right: 10, bottom: 24, left: 36 };
   const SP_IW = SP_W - SP_M.left - SP_M.right;
   const SP_IH = SP_H - SP_M.top  - SP_M.bottom;
 
