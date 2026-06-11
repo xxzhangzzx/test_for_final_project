@@ -1699,3 +1699,17 @@ h1, h2, h3 { color: var(--color-text-primary); letter-spacing: -0.055em; line-he
     margin-left: 0;
   }
 }
+
+/* Future data note spacing fix: keep the note card separated from the chart controls below */
+.projection-section .section-heading-row {
+  margin-bottom: clamp(1.4rem, 3vw, 2.4rem);
+  align-items: start;
+}
+
+.projection-section .section-copy-card {
+  margin-bottom: 0;
+}
+
+.projection-section .chart-card {
+  margin-top: 0;
+}
