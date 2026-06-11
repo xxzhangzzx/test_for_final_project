@@ -3,6 +3,23 @@ let countyData = null;
 let proj = null;
 
 const YEARS = d3.range(1950, 2020);
+
+function clampFloatLabel(label, x, y) {
+  if (!label) return;
+  const pad = 14;
+  const rect = label.getBoundingClientRect();
+  const vw = window.innerWidth || document.documentElement.clientWidth;
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  let nx = x;
+  let ny = y;
+  if (nx + rect.width + pad > vw) nx = vw - rect.width - pad;
+  if (ny + rect.height + pad > vh) ny = vh - rect.height - pad;
+  if (nx < pad) nx = pad;
+  if (ny < pad) ny = pad;
+  label.style.left = nx + 'px';
+  label.style.top = ny + 'px';
+}
+
 const SVG_W = 480, SVG_H = 620;
 
 const SCALES = {
@@ -354,6 +371,7 @@ function setMode(m) {
   });
   render();
   if (window._spRedraw) window._spRedraw();
+  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 function setYear(v) {
@@ -361,6 +379,7 @@ function setYear(v) {
   document.getElementById('dec-lbl').textContent = YEARS[di];
   render();
   if (window._spUpdateYear) window._spUpdateYear();
+  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 Promise.all([
