@@ -354,7 +354,6 @@ function setMode(m) {
   });
   render();
   if (window._spRedraw) window._spRedraw();
-  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 function setYear(v) {
@@ -362,7 +361,6 @@ function setYear(v) {
   document.getElementById('dec-lbl').textContent = YEARS[di];
   render();
   if (window._spUpdateYear) window._spUpdateYear();
-  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 Promise.all([
