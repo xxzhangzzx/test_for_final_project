@@ -25,9 +25,10 @@
   <div class="progress-stops">
     <a data-section="top" href="#top">Opening</a>
     <a data-section="statewide" href="#statewide">Extremes</a>
-    <a data-section="future" href="#future">Future</a>
+    <a data-section="enso" href="#enso">ENSO</a>
     <a data-section="coast" href="#coast">Coast</a>
     <a data-section="insights" href="#insights">Findings</a>
+    <a data-section="future" href="#future">Future</a>
   </div>
 </div>
 
@@ -38,9 +39,10 @@
   </a>
   <nav class="site-nav" aria-label="Page sections">
     <a href="#statewide">Statewide</a>
-    <a href="#future">Future</a>
+    <a href="#enso">ENSO</a>
     <a href="#coast">Coast</a>
-    <a href="#insights">Insights</a>
+    <a href="#insights">Findings</a>
+    <a href="#future">Future</a>
   </nav>
 </header>
 
@@ -202,73 +204,93 @@
     </div>
   </section>
 
-  <section class="section projection-section" id="future">
-    <div class="section-kicker">Future pathways</div>
-    <div class="section-heading-row">
+
+  <section class="section enso-section" id="enso">
+    <div class="section-kicker">Pacific climate driver</div>
+    <div class="section-heading-row enso-heading-row">
       <div>
-        <h2>San Diego’s future depends on emissions</h2>
+        <h2>What are El Niño and La Niña?</h2>
       </div>
       <div>
         <p>
-          The San Diego temperature chart uses CMIP6 GFDL-CM4 data from 1850 to 2100. Monthly
-          temperature values were converted from Kelvin to Celsius, then aggregated into annual
-          minimum, mean, and maximum values.
+          El Niño and La Niña are opposite phases of a Pacific climate pattern. They describe whether
+          sea surface temperatures in the central and eastern tropical Pacific are warmer or cooler than usual.
         </p>
         <p>
-          The historical record runs from 1850–2014. After 2015, the chart compares SSP2-4.5,
-          a moderate-emissions pathway, and SSP5-8.5, a high-emissions pathway.
+          These ocean changes can shift rainfall, storms, coastal sea level, and year-to-year climate variability
+          along the California coast.
         </p>
       </div>
     </div>
 
-    <div class="viz-card chart-card">
-      <div class="viz-title-row">
-        <div>
-          <p class="chart-label">Temperature projection</p>
-          <h3>Historical vs future emissions scenarios</h3>
+    <div class="enso-explainer-card">
+      <div class="enso-diagram" aria-label="Simplified El Niño and La Niña Pacific Ocean diagram">
+        <div class="enso-ocean-line"></div>
+        <div class="enso-land land-west">Asia / Australia</div>
+        <div class="enso-land land-east">Americas</div>
+
+        <div class="enso-phase enso-warm">
+          <span class="phase-label">El Niño</span>
+          <span class="phase-subtitle">warm water shifts east</span>
+          <span class="flow-arrow arrow-warm one"></span>
+          <span class="flow-arrow arrow-warm two"></span>
+          <span class="warm-pool"></span>
         </div>
-        <div class="controls compact">
-          <span>Toggle</span>
-          <button id="btn-hist" class="on-hist" onclick="toggleScenario('historical')">Historical</button>
-          <button id="btn-s245" class="on-s245" onclick="toggleScenario('SSP2-4.5')">SSP2-4.5</button>
-          <button id="btn-s585" class="on-s585" onclick="toggleScenario('SSP5-8.5')">SSP5-8.5</button>
+
+        <div class="enso-phase enso-cool">
+          <span class="phase-label">La Niña</span>
+          <span class="phase-subtitle">cool upwelling strengthens</span>
+          <span class="flow-arrow arrow-cool one"></span>
+          <span class="flow-arrow arrow-cool two"></span>
+          <span class="cool-pool"></span>
         </div>
       </div>
 
-      <div id="chart">
-        <svg id="viz"></svg>
+      <div class="enso-explainer-text">
+        <article>
+          <span>Warm phase</span>
+          <h3>El Niño</h3>
+          <p>
+            Warmer-than-normal water spreads toward the eastern Pacific. For coastal California, this can
+            be associated with warmer ocean conditions and shifts in storms or rainfall.
+          </p>
+        </article>
+        <article>
+          <span>Cool phase</span>
+          <h3>La Niña</h3>
+          <p>
+            Cooler-than-normal water becomes more prominent in the eastern Pacific. This often reflects
+            stronger upwelling and a different rainfall pattern from El Niño years.
+          </p>
+        </article>
+        <article class="enso-why">
+          <span>Why it matters here</span>
+          <h3>It connects ocean signals to San Diego.</h3>
+          <p>
+            Because San Diego sits on the Pacific coast, changes in ocean temperature and circulation help
+            explain why local coastal indicators do not always move smoothly or in the same direction.
+          </p>
+        </article>
       </div>
-
-      <div class="legend">
-        <div><span class="swatch hist"></span>Historical</div>
-        <div><span class="swatch s245"></span>SSP2-4.5 moderate</div>
-        <div><span class="swatch s585"></span>SSP5-8.5 high emissions</div>
-        <div><span class="swatch dash"></span>Projections start: 2015</div>
-      </div>
-    </div>
-
-    <div id="tooltip">
-      <div class="tt-year" id="tt-year"></div>
-      <div id="tt-content"></div>
     </div>
   </section>
 
   <section class="bridge">
     <div class="bridge-inner">
       <p class="section-kicker dark">Coastal transition</p>
-      <h2>From statewide extremes to the coast</h2>
+      <h2>Then we zoom into San Diego</h2>
       <p>
-        If the temperature story shows that “stable San Diego” is more complicated than it seems,
-        the coastal data adds another layer: ocean temperature, sea level height, and precipitation
-        do not move in the same way every year.
+        After looking at statewide temperature extremes and Pacific climate patterns, the next step is to
+        focus on the coast. San Diego gives us a local case study where ocean temperature, sea level height,
+        and precipitation can be compared year by year.
       </p>
       <p>
-        During El Niño years, warmer-than-average water can pool along the eastern Pacific, pushing
-        sea surface temperatures up and sea levels higher as the ocean expands. La Niña often reverses
-        the pattern with cooler water, lower sea levels, and drier conditions.
+        This transition connects the larger California pattern to the coastal signals that people in San Diego
+        are more likely to experience directly.
       </p>
     </div>
   </section>
+
 
   <section class="section coastal" id="coast">
     <div class="section-kicker">Coastal dashboard</div>
@@ -339,7 +361,7 @@
   </section>
 
   <section class="section insights" id="insights">
-    <div class="section-kicker">Final takeaways</div>
+    <div class="section-kicker">Key takeaways</div>
     <h2>What the patterns reveal</h2>
 
     <div class="insight-grid">
@@ -389,6 +411,65 @@
         and desert San Diego regions. Adding vegetation, rainfall, and ecosystem indicators would help show
         how climate change affects different communities and landscapes within the same county.
       </p>
+    </div>
+  </section>
+
+
+  <section class="section projection-section" id="future">
+    <div class="section-kicker">Future pathways</div>
+    <div class="section-heading-row">
+      <div>
+        <h2>San Diego’s future depends on emissions</h2>
+      </div>
+      <div>
+        <p>
+          The San Diego temperature chart uses CMIP6 GFDL-CM4 data from 1850 to 2100. Monthly
+          temperature values were converted from Kelvin to Celsius, then aggregated into annual
+          minimum, mean, and maximum values.
+        </p>
+        <p>
+          The historical record runs from 1850–2014. After 2015, the chart compares SSP2-4.5,
+          a moderate-emissions pathway, and SSP5-8.5, a high-emissions pathway.
+        </p>
+      </div>
+    </div>
+
+    <div class="viz-card chart-card">
+      <div class="viz-title-row">
+        <div>
+          <p class="chart-label">Temperature projection</p>
+          <h3>Historical vs future emissions scenarios</h3>
+        </div>
+        <div class="controls compact">
+          <span>Toggle</span>
+          <button id="btn-hist" class="on-hist" onclick="toggleScenario('historical')">Historical</button>
+          <button id="btn-s245" class="on-s245" onclick="toggleScenario('SSP2-4.5')">SSP2-4.5</button>
+          <button id="btn-s585" class="on-s585" onclick="toggleScenario('SSP5-8.5')">SSP5-8.5</button>
+        </div>
+      </div>
+
+      <div id="chart">
+        <svg id="viz"></svg>
+      </div>
+
+      <div class="legend">
+        <div><span class="swatch hist"></span>Historical</div>
+        <div><span class="swatch s245"></span>SSP2-4.5 moderate</div>
+        <div><span class="swatch s585"></span>SSP5-8.5 high emissions</div>
+        <div><span class="swatch dash"></span>Projections start: 2015</div>
+      </div>
+    </div>
+
+    <div class="future-closing-note">
+      <p>
+        In this story, the ending is not fixed: lower emissions keep San Diego closer to its historical range,
+        while higher emissions push future temperatures farther from the climate people are used to.
+      </p>
+    </div>
+
+    <div id="tooltip">
+      <div class="tt-year" id="tt-year"></div>
+      <div id="tt-content"></div>
     </div>
   </section>
 </main>

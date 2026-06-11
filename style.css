@@ -1007,3 +1007,309 @@ h1, h2, h3 { color: var(--color-text-primary); letter-spacing: -0.055em; line-he
     transform: scale(0.9) !important;
   }
 }
+
+
+
+/* ENSO explainer section: concrete El Niño / La Niña visualization */
+.progress-stops {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.enso-section {
+  max-width: min(1220px, calc(100% - 2rem));
+}
+
+.enso-heading-row {
+  align-items: end;
+}
+
+.enso-explainer-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+  margin-top: 1.4rem;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid rgba(190, 235, 255, 0.15);
+  border-radius: 32px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.022)),
+    radial-gradient(circle at 18% 24%, rgba(87, 200, 255, 0.13), transparent 18rem),
+    radial-gradient(circle at 86% 72%, rgba(255, 159, 110, 0.14), transparent 20rem),
+    rgba(5, 16, 29, 0.68);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.enso-diagram {
+  position: relative;
+  min-height: 430px;
+  border: 1px solid rgba(190, 235, 255, 0.12);
+  border-radius: 26px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(129, 218, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 218, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(5, 31, 50, 0.95), rgba(2, 12, 24, 0.95));
+  background-size: 64px 64px, 64px 64px, 100% 100%;
+}
+
+.enso-ocean-line {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(190,235,255,0.35), transparent);
+}
+
+.enso-land {
+  position: absolute;
+  top: 1rem;
+  padding: 0.45rem 0.68rem;
+  border: 1px solid rgba(190, 235, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(3, 14, 25, 0.55);
+  color: rgba(238, 250, 255, 0.68);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.land-west {
+  left: 1rem;
+}
+
+.land-east {
+  right: 1rem;
+}
+
+.enso-phase {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 42%;
+  border-radius: 999px;
+}
+
+.enso-warm {
+  top: 16%;
+  background:
+    radial-gradient(ellipse at 72% 50%, rgba(255, 159, 110, 0.32), transparent 42%),
+    linear-gradient(90deg, transparent, rgba(255, 209, 102, 0.10), rgba(255, 107, 107, 0.18), transparent);
+  border-top: 2px solid rgba(255, 159, 110, 0.28);
+}
+
+.enso-cool {
+  bottom: 12%;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(87, 200, 255, 0.28), transparent 46%),
+    linear-gradient(90deg, transparent, rgba(87, 200, 255, 0.16), rgba(86, 241, 212, 0.09), transparent);
+  border-bottom: 2px solid rgba(87, 200, 255, 0.24);
+}
+
+.phase-label,
+.phase-subtitle {
+  position: absolute;
+  left: 1rem;
+  display: block;
+  text-transform: uppercase;
+}
+
+.phase-label {
+  top: 1rem;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 920;
+  letter-spacing: 0.12em;
+}
+
+.phase-subtitle {
+  top: 2.6rem;
+  color: rgba(238, 250, 255, 0.58);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+}
+
+.flow-arrow {
+  position: absolute;
+  height: 3px;
+  border-radius: 999px;
+  opacity: 0.82;
+}
+
+.flow-arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: translateY(-50%);
+}
+
+.arrow-warm {
+  left: 22%;
+  width: 50%;
+  top: 58%;
+  background: linear-gradient(90deg, rgba(255, 209, 102, 0.1), rgba(255, 159, 110, 0.95));
+  animation: warmArrowMove 3.2s ease-in-out infinite;
+}
+
+.arrow-warm.two {
+  top: 70%;
+  left: 30%;
+  width: 42%;
+  animation-delay: -1.2s;
+}
+
+.arrow-warm::after {
+  right: -1px;
+  border-left: 12px solid rgba(255, 159, 110, 0.95);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+
+.arrow-cool {
+  right: 22%;
+  width: 50%;
+  top: 52%;
+  background: linear-gradient(270deg, rgba(87, 200, 255, 0.1), rgba(87, 200, 255, 0.9));
+  animation: coolArrowMove 3.5s ease-in-out infinite;
+}
+
+.arrow-cool.two {
+  top: 66%;
+  right: 30%;
+  width: 42%;
+  animation-delay: -1.3s;
+}
+
+.arrow-cool::after {
+  left: -1px;
+  border-right: 12px solid rgba(87, 200, 255, 0.9);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+
+.warm-pool,
+.cool-pool {
+  position: absolute;
+  right: 8%;
+  top: 38%;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  filter: blur(7px);
+  opacity: 0.72;
+}
+
+.warm-pool {
+  background: rgba(255, 107, 107, 0.36);
+  animation: poolPulse 2.8s ease-in-out infinite alternate;
+}
+
+.cool-pool {
+  left: 8%;
+  right: auto;
+  background: rgba(87, 200, 255, 0.34);
+  animation: poolPulse 3.1s ease-in-out infinite alternate;
+}
+
+.enso-explainer-text {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.enso-explainer-text article {
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(190, 235, 255, 0.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.062), rgba(255,255,255,0.02)),
+    rgba(3, 14, 25, 0.44);
+}
+
+.enso-explainer-text span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--color-teal);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.enso-explainer-text h3 {
+  margin: 0 0 0.45rem;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+}
+
+.enso-explainer-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.52;
+}
+
+.enso-why {
+  border-color: rgba(255, 209, 102, 0.18) !important;
+}
+
+.future-closing-note {
+  margin-top: 1.1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(255, 209, 102, 0.18);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 209, 102, 0.10), transparent 15rem),
+    rgba(3, 14, 25, 0.46);
+}
+
+.future-closing-note p {
+  margin: 0;
+}
+
+@keyframes warmArrowMove {
+  from { transform: translateX(-1rem); opacity: 0.55; }
+  to { transform: translateX(1rem); opacity: 0.95; }
+}
+
+@keyframes coolArrowMove {
+  from { transform: translateX(1rem); opacity: 0.48; }
+  to { transform: translateX(-1rem); opacity: 0.92; }
+}
+
+@keyframes poolPulse {
+  from { transform: scale(0.92); opacity: 0.42; }
+  to { transform: scale(1.12); opacity: 0.8; }
+}
+
+@media (max-width: 1040px) {
+  .enso-explainer-card {
+    grid-template-columns: 1fr;
+  }
+
+  .enso-diagram {
+    min-height: 360px;
+  }
+
+  .progress-stops {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .enso-diagram {
+    min-height: 320px;
+  }
+
+  .enso-land,
+  .phase-subtitle {
+    display: none;
+  }
+
+  .phase-label {
+    font-size: 0.78rem;
+  }
+}
