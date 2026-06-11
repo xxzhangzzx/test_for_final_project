@@ -91,7 +91,7 @@ function render() {
 }
 
 function buildMap(countiesGeoJSON) {
-  proj = d3.geoMercator().fitSize([SVG_W, SVG_H], countiesGeoJSON);
+  proj = d3.geoMercator().fitExtent([[10, 6], [SVG_W - 10, SVG_H - 6]], countiesGeoJSON);
   const pathGen = d3.geoPath(proj);
 
   const svg = d3.select('#ca-svg');

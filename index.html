@@ -131,6 +131,33 @@
           <div id="map-wrap">
             <p id="loading-msg">Loading California temperature data...</p>
             <svg id="ca-svg" viewBox="0 0 480 620" style="display:none;"></svg>
+
+            <div class="map-overlay" aria-hidden="true">
+              <div class="map-scanline"></div>
+
+              <div class="map-callout map-callout-coast">
+                <span>Coastal buffer</span>
+                <strong>Ocean-moderated extremes</strong>
+              </div>
+
+              <div class="map-callout map-callout-inland">
+                <span>Inland heat signal</span>
+                <strong>Larger temperature range</strong>
+              </div>
+
+              <div class="map-callout map-callout-south">
+                <span>San Diego focus</span>
+                <strong>Coastal case study</strong>
+              </div>
+
+              <div class="city-pin pin-sf"><b></b><span>SF</span></div>
+              <div class="city-pin pin-la"><b></b><span>LA</span></div>
+              <div class="city-pin pin-sd"><b></b><span>SD</span></div>
+              <div class="city-pin pin-sac"><b></b><span>SAC</span></div>
+
+              <div class="map-compass">N</div>
+            </div>
+
             <div id="float-label"></div>
           </div>
 
