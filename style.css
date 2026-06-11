@@ -1416,3 +1416,121 @@ input[type="range"]::-webkit-slider-thumb {
     flex-direction: column;
   }
 }
+
+/* Final spacing and map visibility fixes */
+.hero {
+  max-width: min(1320px, calc(100% - 3rem));
+  padding-left: clamp(2.25rem, 5vw, 4.5rem);
+  padding-right: clamp(2.25rem, 5vw, 4.5rem);
+}
+
+.hero::before {
+  left: clamp(1.25rem, 2.5vw, 2rem);
+  right: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.hero::after {
+  left: clamp(3rem, 6vw, 5.2rem);
+}
+
+.hero-copy {
+  padding-left: clamp(0.6rem, 1.9vw, 2rem);
+}
+
+.hero h1 {
+  max-width: 880px;
+  font-size: clamp(3.15rem, 7.35vw, 7.45rem);
+  line-height: 1.02;
+}
+
+.hero-lead,
+.hero p {
+  max-width: 780px;
+}
+
+.map-card {
+  overflow: visible;
+}
+
+.map-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(205px, 230px);
+  align-items: start;
+}
+
+#map-wrap {
+  height: clamp(430px, 50vh, 540px);
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+#ca-svg {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  display: block;
+}
+
+.sidebar {
+  min-height: clamp(430px, 50vh, 540px);
+}
+
+#hovered-panel {
+  min-height: 0;
+}
+
+@media (max-width: 1040px) {
+  .hero {
+    max-width: min(100%, calc(100% - 1rem));
+    padding-left: clamp(1.25rem, 4vw, 2rem);
+    padding-right: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .hero-copy {
+    padding-left: clamp(0.25rem, 2vw, 0.9rem);
+  }
+
+  .hero::after {
+    left: clamp(2rem, 5vw, 3rem);
+  }
+
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #map-wrap {
+    height: clamp(440px, 68vh, 610px);
+  }
+
+  .sidebar {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+  }
+
+  .hero::before {
+    left: 0.55rem;
+    right: 0.55rem;
+  }
+
+  .hero::after {
+    left: 1.7rem;
+    bottom: 4.3rem;
+    max-width: calc(100% - 3.4rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 14.5vw, 5rem);
+  }
+
+  #map-wrap {
+    height: clamp(390px, 62vh, 500px);
+  }
+}
