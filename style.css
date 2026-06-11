@@ -1333,3 +1333,110 @@ h1, h2, h3 { color: var(--color-text-primary); letter-spacing: -0.055em; line-he
     padding: 4rem 1.35rem;
   }
 }
+
+/* Decorated section copy cards: make explanatory text feel intentional, not dropped in */
+.section-copy-card {
+  position: relative;
+  padding: 1.2rem 1.25rem 1.2rem 1.35rem;
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02) 46%),
+    rgba(5, 16, 29, 0.46);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+.section-copy-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--color-teal), rgba(255, 209, 102, 0.9));
+  opacity: 0.95;
+}
+
+.section-copy-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(86, 241, 212, 0.12), transparent 12rem),
+    linear-gradient(135deg, transparent 0 68%, rgba(255,255,255,0.035) 69%, transparent 100%);
+}
+
+.copy-chip {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-bottom: 0.9rem;
+  padding: 0.42rem 0.72rem;
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(3, 14, 25, 0.44);
+  color: var(--color-text-tertiary);
+  font-size: 0.63rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.copy-chip::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-teal);
+  box-shadow: 0 0 12px rgba(86, 241, 212, 0.38);
+}
+
+.section-copy-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  line-height: 1.62;
+}
+
+.section-copy-card p + p {
+  margin-top: 0.95rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid rgba(190, 235, 255, 0.10);
+  color: var(--color-text-secondary);
+}
+
+.section-copy-card .copy-lead {
+  font-size: 1.02rem;
+  color: rgba(245, 250, 255, 0.94);
+}
+
+.copy-enso::before {
+  background: linear-gradient(180deg, rgba(87, 200, 255, 0.95), rgba(86, 241, 212, 0.88));
+}
+
+.copy-coast::before {
+  background: linear-gradient(180deg, rgba(86, 241, 212, 0.95), rgba(255, 209, 102, 0.9));
+}
+
+.copy-future::before {
+  background: linear-gradient(180deg, rgba(255, 209, 102, 0.95), rgba(255, 107, 107, 0.88));
+}
+
+.copy-future .copy-chip::before {
+  background: var(--color-gold);
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.42);
+}
+
+@media (max-width: 900px) {
+  .section-copy-card {
+    padding: 1rem 1rem 1rem 1.15rem;
+  }
+
+  .section-copy-card .copy-lead {
+    font-size: 0.98rem;
+  }
+}
