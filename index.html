@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Climate Lens: San Diego</title>
-  <link rel="stylesheet" href="style.css?v=16" />
+  <link rel="stylesheet" href="style.css?v=20" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 </head>
@@ -17,6 +17,20 @@
   <span class="current current-one"></span>
   <span class="current current-two"></span>
   <span class="current current-three"></span>
+</div>
+
+<canvas id="ocean-particles" class="ocean-particles" aria-hidden="true"></canvas>
+<div class="climate-lens" aria-hidden="true"><span>Climate Lens</span></div>
+
+<div class="climate-progress" aria-label="Page progress">
+  <div class="progress-track"><span id="scroll-progress-fill"></span></div>
+  <div class="progress-stops">
+    <a data-section="top" href="#top">Opening</a>
+    <a data-section="statewide" href="#statewide">Extremes</a>
+    <a data-section="future" href="#future">Future</a>
+    <a data-section="coast" href="#coast">Coast</a>
+    <a data-section="insights" href="#insights">Findings</a>
+  </div>
 </div>
 
 <header class="site-header">
@@ -112,6 +126,7 @@
           <label for="dec-sl">Year</label>
           <input type="range" id="dec-sl" min="0" max="64" step="1" value="0" oninput="setYear(+this.value)" />
           <span id="dec-lbl">1950</span>
+          <button id="play-years" class="play-years" type="button" aria-label="Play climate timeline">▶ Play</button>
         </div>
 
         <div class="map-layout">
@@ -133,6 +148,30 @@
             <div id="hovered-panel">
               <strong>Hover a region</strong><br />
               <span>Move over the map to see values and click to compare a time series.</span>
+            </div>
+
+            <div class="scan-panel" id="scan-panel">
+              <span class="scan-eyebrow">Region scanned</span>
+              <strong id="scan-name">Move over California</strong>
+              <div class="scan-grid">
+                <div><span>Hot</span><b id="scan-hot">—</b></div>
+                <div><span>Cold</span><b id="scan-cold">—</b></div>
+                <div><span>Range</span><b id="scan-range">—</b></div>
+              </div>
+              <p id="scan-note">Hover a county to turn the map into a small climate scanner.</p>
+            </div>
+
+            <div class="compare-panel">
+              <span class="scan-eyebrow">City comparison</span>
+              <strong>San Diego vs California regions</strong>
+              <div class="compare-buttons" aria-label="Compare San Diego with another region">
+                <button class="compare-btn active" type="button" data-county="Los Angeles">Los Angeles</button>
+                <button class="compare-btn" type="button" data-county="San Francisco">San Francisco</button>
+                <button class="compare-btn" type="button" data-county="Sacramento">Sacramento</button>
+                <button class="compare-btn" type="button" data-county="Inyo">Inland desert</button>
+              </div>
+              <svg id="city-compare-svg" viewBox="0 0 260 150" aria-label="City comparison chart"></svg>
+              <p id="city-compare-caption">Compare San Diego with Los Angeles using the selected temperature mode.</p>
             </div>
           </aside>
         </div>
@@ -341,6 +380,18 @@
       </article>
     </div>
 
+    <div class="reveal-card" id="reveal-card">
+      <div class="reveal-orbit" aria-hidden="true"></div>
+      <span class="section-kicker">Final scan</span>
+      <h3>So... is San Diego really stable?</h3>
+      <p class="reveal-answer">Partly stable, but not unchanged.</p>
+      <div class="reveal-grid">
+        <div><span>01</span><strong>Temperature extremes are changing</strong></div>
+        <div><span>02</span><strong>The coast moderates heat, but does not remove risk</strong></div>
+        <div><span>03</span><strong>Future outcomes depend on emissions</strong></div>
+      </div>
+    </div>
+
     <div class="closing-note">
       <p>
         Future versions of this project could expand the analysis by comparing coastal, inland, mountain,
@@ -356,6 +407,6 @@
   <span>Data storytelling with CMIP6 climate indicators</span>
 </footer>
 
-<script src="main.js?v=8"></script>
+<script src="main.js?v=20"></script>
 </body>
 </html>

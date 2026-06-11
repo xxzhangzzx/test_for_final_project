@@ -262,12 +262,13 @@ function buildMap(countiesGeoJSON) {
           ? (cd.hot[di] - cd.cold[di]).toFixed(1) + '°C' : 'N/A';
         const v = getVal(cd, mode, di);
         const vStr = v !== null ? v.toFixed(1) + '°C' : 'N/A';
+        if (window.updateMapScanner) window.updateMapScanner(name, hot, cold, range, vStr);
 
         floatLabel.innerHTML =
           `<strong style="display:block;margin-bottom:2px;">${name} County</strong>
-           <span style="color:#8B0000;">Max high: ${hot}</span><br>
-           <span style="color:#003080;">Min low:  ${cold}</span><br>
-           <span style="color:#5a0060;">Range:    ${range}</span>
+           <span style="color:#ffb08a;">Max high: ${hot}</span><br>
+           <span style="color:#95d4ff;">Min low:  ${cold}</span><br>
+           <span style="color:#dfb7ff;">Range:    ${range}</span>
            <hr style="margin:4px 0;border:none;border-top:1px solid rgba(190,235,255,0.16);">
            <strong>${SCALES[mode].title}: ${vStr}</strong>`;
 
@@ -309,6 +310,7 @@ function buildMap(countiesGeoJSON) {
       })
       .on('mouseleave', function(event, d) {
         floatLabel.style.display = 'none';
+        if (window.resetMapScanner) window.resetMapScanner();
         spHoverG.selectAll('*').remove();
         document.getElementById('sp-hint').textContent = 'Click a county to pin it. Click again to remove.';
         const name = d.properties.name;
@@ -352,6 +354,7 @@ function setMode(m) {
   });
   render();
   if (window._spRedraw) window._spRedraw();
+  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 function setYear(v) {
@@ -359,6 +362,7 @@ function setYear(v) {
   document.getElementById('dec-lbl').textContent = YEARS[di];
   render();
   if (window._spUpdateYear) window._spUpdateYear();
+  if (window.updateCityCompare) window.updateCityCompare();
 }
 
 Promise.all([
@@ -677,3 +681,239 @@ const COLORS = {
 
   document.getElementById('yearSlider').addEventListener('input', e => update(+e.target.value));
   update(1997);
+
+/* ---- Added interactive features: progress, lens, autoplay, scanner, comparison, particles, reveal ---- */
+(function() {
+  const root = document.documentElement;
+
+  function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+
+  const lens = document.querySelector('.climate-lens');
+  if (lens && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let lx = -200, ly = -200, tx = -200, ty = -200;
+    function moveLens() {
+      lx += (tx - lx) * 0.22;
+      ly += (ty - ly) * 0.22;
+      lens.style.left = lx + 'px';
+      lens.style.top = ly + 'px';
+      requestAnimationFrame(moveLens);
+    }
+    window.addEventListener('pointermove', e => {
+      tx = e.clientX;
+      ty = e.clientY;
+      document.body.classList.add('lens-active');
+    }, { passive: true });
+    window.addEventListener('pointerleave', () => document.body.classList.remove('lens-active'));
+    moveLens();
+  }
+
+  const progressFill = document.getElementById('scroll-progress-fill');
+  const progressStops = Array.from(document.querySelectorAll('.progress-stops a'));
+  const progressSections = progressStops
+    .map(a => ({ link: a, el: document.getElementById(a.dataset.section) || document.querySelector(a.getAttribute('href')) }))
+    .filter(d => d.el);
+
+  function updateScrollProgress() {
+    const doc = document.documentElement;
+    const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+    const pct = clamp((window.scrollY / max) * 100, 0, 100);
+    if (progressFill) progressFill.style.width = pct + '%';
+
+    let active = progressSections[0];
+    const marker = window.scrollY + window.innerHeight * 0.42;
+    progressSections.forEach(item => {
+      if (item.el.offsetTop <= marker) active = item;
+    });
+    progressStops.forEach(a => a.classList.toggle('active', active && a === active.link));
+  }
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+  window.addEventListener('resize', updateScrollProgress);
+  updateScrollProgress();
+
+  const playBtn = document.getElementById('play-years');
+  const yearSlider = document.getElementById('dec-sl');
+  let playTimer = null;
+  function stopTimeline() {
+    if (playTimer) clearInterval(playTimer);
+    playTimer = null;
+    if (playBtn) {
+      playBtn.classList.remove('playing');
+      playBtn.textContent = '▶ Play';
+    }
+  }
+  function startTimeline() {
+    if (!yearSlider || typeof setYear !== 'function') return;
+    if (playBtn) {
+      playBtn.classList.add('playing');
+      playBtn.textContent = 'Ⅱ Pause';
+    }
+    playTimer = setInterval(() => {
+      const max = +yearSlider.max;
+      let next = +yearSlider.value + 1;
+      if (next > max) next = +yearSlider.min;
+      yearSlider.value = String(next);
+      setYear(next);
+    }, 420);
+  }
+  if (playBtn) {
+    playBtn.addEventListener('click', () => playTimer ? stopTimeline() : startTimeline());
+    if (yearSlider) yearSlider.addEventListener('input', stopTimeline);
+  }
+
+  window.updateMapScanner = function(name, hot, cold, range, selected) {
+    const scanName = document.getElementById('scan-name');
+    const scanHot = document.getElementById('scan-hot');
+    const scanCold = document.getElementById('scan-cold');
+    const scanRange = document.getElementById('scan-range');
+    const scanNote = document.getElementById('scan-note');
+    if (!scanName) return;
+    scanName.textContent = name + ' County';
+    scanHot.textContent = hot;
+    scanCold.textContent = cold;
+    scanRange.textContent = range;
+    if (scanNote) scanNote.textContent = SCALES[mode].title + ' in ' + YEARS[di] + ': ' + selected + '. Click the county to pin its trend.';
+  };
+
+  window.resetMapScanner = function() {
+    const scanName = document.getElementById('scan-name');
+    const scanHot = document.getElementById('scan-hot');
+    const scanCold = document.getElementById('scan-cold');
+    const scanRange = document.getElementById('scan-range');
+    const scanNote = document.getElementById('scan-note');
+    if (!scanName) return;
+    scanName.textContent = 'Move over California';
+    scanHot.textContent = '—';
+    scanCold.textContent = '—';
+    scanRange.textContent = '—';
+    if (scanNote) scanNote.textContent = 'Hover a county to turn the map into a small climate scanner.';
+  };
+
+  const compareSvg = d3.select('#city-compare-svg');
+  const compareCaption = document.getElementById('city-compare-caption');
+  let compareCounty = 'Los Angeles';
+
+  function countyVals(name) {
+    if (!countyData || !countyData.counties[name]) return [];
+    return YEARS.map((yr, i) => ({ year: yr, value: getVal(countyData.counties[name], mode, i) })).filter(d => d.value !== null);
+  }
+
+  window.updateCityCompare = function() {
+    if (!compareSvg.node() || !countyData) return;
+    const sd = countyVals('San Diego');
+    const other = countyVals(compareCounty);
+    if (!sd.length || !other.length) return;
+    compareSvg.selectAll('*').remove();
+
+    const W = 260, H = 150;
+    const m = { top: 12, right: 10, bottom: 28, left: 30 };
+    const x = d3.scaleLinear().domain([1950, 2019]).range([m.left, W - m.right]);
+    const all = sd.concat(other);
+    const y = d3.scaleLinear().domain(d3.extent(all, d => d.value)).nice().range([H - m.bottom, m.top]);
+    const line = d3.line().x(d => x(d.year)).y(d => y(d.value)).curve(d3.curveCatmullRom.alpha(0.5));
+
+    compareSvg.append('g')
+      .attr('transform', `translate(0,${H - m.bottom})`)
+      .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format('d')))
+      .call(g => g.select('.domain').attr('stroke','rgba(190,235,255,0.35)'))
+      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.25)'))
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','9px'));
+
+    compareSvg.append('g')
+      .attr('transform', `translate(${m.left},0)`)
+      .call(d3.axisLeft(y).ticks(4).tickFormat(d => d + '°'))
+      .call(g => g.select('.domain').remove())
+      .call(g => g.selectAll('line').attr('stroke','rgba(190,235,255,0.18)').attr('x2', W - m.left - m.right))
+      .call(g => g.selectAll('text').attr('fill','rgba(212,232,242,0.70)').style('font-size','9px'));
+
+    compareSvg.append('path').datum(sd).attr('d', line).attr('fill','none').attr('stroke','#56f1d4').attr('stroke-width',2.4);
+    compareSvg.append('path').datum(other).attr('d', line).attr('fill','none').attr('stroke','#ffd166').attr('stroke-width',2.1);
+
+    const sdNow = sd.find(d => d.year === YEARS[di]);
+    const otherNow = other.find(d => d.year === YEARS[di]);
+    compareSvg.append('line').attr('x1', x(YEARS[di])).attr('x2', x(YEARS[di])).attr('y1', m.top).attr('y2', H - m.bottom).attr('stroke','#fff').attr('stroke-width',1).attr('stroke-dasharray','3,3').attr('opacity',0.72);
+    if (sdNow) compareSvg.append('circle').attr('cx', x(sdNow.year)).attr('cy', y(sdNow.value)).attr('r', 4).attr('fill','#56f1d4').attr('stroke','#fff');
+    if (otherNow) compareSvg.append('circle').attr('cx', x(otherNow.year)).attr('cy', y(otherNow.value)).attr('r', 4).attr('fill','#ffd166').attr('stroke','#fff');
+
+    compareSvg.append('text').attr('x', m.left).attr('y', 10).attr('fill','#56f1d4').attr('font-size',9).attr('font-weight',800).text('San Diego');
+    compareSvg.append('text').attr('x', W - m.right).attr('y', 10).attr('text-anchor','end').attr('fill','#ffd166').attr('font-size',9).attr('font-weight',800).text(compareCounty === 'Inyo' ? 'Inland desert' : compareCounty);
+
+    const otherLabel = compareCounty === 'Inyo' ? 'Inland desert' : compareCounty;
+    if (compareCaption) compareCaption.textContent = 'San Diego vs ' + otherLabel + ' · ' + SCALES[mode].title + ' · selected year ' + YEARS[di] + '.';
+  };
+
+  document.querySelectorAll('.compare-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      compareCounty = btn.dataset.county;
+      document.querySelectorAll('.compare-btn').forEach(b => b.classList.toggle('active', b === btn));
+      window.updateCityCompare();
+    });
+  });
+
+  const waitForCompare = setInterval(() => {
+    if (countyData) {
+      clearInterval(waitForCompare);
+      window.updateCityCompare();
+    }
+  }, 250);
+
+  const reveal = document.getElementById('reveal-card');
+  if (reveal && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) reveal.classList.add('is-visible');
+      });
+    }, { threshold: 0.35 });
+    io.observe(reveal);
+  } else if (reveal) {
+    reveal.classList.add('is-visible');
+  }
+
+  const canvas = document.getElementById('ocean-particles');
+  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const ctx = canvas.getContext('2d');
+    let w = 0, h = 0, particles = [];
+    function resizeParticles() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = canvas.width = Math.floor(window.innerWidth * dpr);
+      h = canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(90, Math.max(38, Math.floor(window.innerWidth / 18)));
+      particles = Array.from({ length: count }, (_, i) => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: 0.6 + Math.random() * 1.8,
+        vx: 0.18 + Math.random() * 0.45,
+        vy: -0.06 + Math.random() * 0.12,
+        phase: Math.random() * Math.PI * 2
+      }));
+    }
+    function drawParticles(t) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy + Math.sin(t * 0.001 + p.phase) * 0.12;
+        if (p.x > window.innerWidth + 20) p.x = -20;
+        if (p.y < -20) p.y = window.innerHeight + 20;
+        if (p.y > window.innerHeight + 20) p.y = -20;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = i % 5 === 0 ? 'rgba(255,209,102,0.32)' : 'rgba(86,241,212,0.22)';
+        ctx.fill();
+        if (i % 3 === 0) {
+          ctx.beginPath();
+          ctx.moveTo(p.x - 26, p.y + 8);
+          ctx.lineTo(p.x + 30, p.y - 9);
+          ctx.strokeStyle = 'rgba(87,200,255,0.10)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      });
+      requestAnimationFrame(drawParticles);
+    }
+    resizeParticles();
+    window.addEventListener('resize', resizeParticles);
+    requestAnimationFrame(drawParticles);
+  }
+})();

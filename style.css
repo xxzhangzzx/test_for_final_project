@@ -1769,3 +1769,367 @@ input[type="range"]::-webkit-slider-thumb {
     font-size: clamp(2rem, 11vw, 3.2rem);
   }
 }
+
+
+/* All-features interactive layer: lens, progress, timeline play, comparison, scanner, reveal card */
+.ocean-particles {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.46;
+  mix-blend-mode: screen;
+}
+
+.climate-lens {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 148px;
+  height: 148px;
+  border: 1px solid rgba(86, 241, 212, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 80;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.82);
+  transition: opacity 160ms ease, transform 160ms ease;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.10), transparent 18%),
+    repeating-linear-gradient(0deg, rgba(86,241,212,0.10) 0 1px, transparent 1px 11px),
+    rgba(3, 20, 34, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08) inset,
+    0 0 34px rgba(86, 241, 212, 0.22),
+    0 0 70px rgba(87, 200, 255, 0.16);
+  backdrop-filter: brightness(1.22) saturate(1.35) contrast(1.08) blur(1.5px);
+}
+
+.climate-lens::before,
+.climate-lens::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 116%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(86,241,212,0.72), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.climate-lens::after {
+  width: 1px;
+  height: 116%;
+  background: linear-gradient(180deg, transparent, rgba(86,241,212,0.72), transparent);
+}
+
+.climate-lens span {
+  position: absolute;
+  left: 50%;
+  bottom: 17px;
+  transform: translateX(-50%);
+  color: rgba(226, 255, 250, 0.88);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+body.lens-active .climate-lens {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.climate-progress {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 70;
+  width: min(820px, calc(100% - 2rem));
+  padding: 0.65rem 0.75rem 0.72rem;
+  border: 1px solid rgba(190, 235, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(3, 12, 22, 0.62);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.34);
+  transform: translateX(-50%);
+  backdrop-filter: blur(20px) saturate(1.25);
+}
+
+.progress-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(190, 235, 255, 0.13);
+  overflow: hidden;
+}
+
+#scroll-progress-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-teal), var(--color-blue), var(--color-gold), var(--color-red));
+  box-shadow: 0 0 22px rgba(86, 241, 212, 0.42);
+}
+
+.progress-stops {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.42rem;
+}
+
+.progress-stops a {
+  color: rgba(213, 231, 242, 0.62);
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  transition: color 180ms ease, text-shadow 180ms ease;
+}
+
+.progress-stops a.active {
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(86, 241, 212, 0.48);
+}
+
+.play-years {
+  min-width: 82px;
+  border: 1px solid rgba(190, 235, 255, 0.18);
+  border-radius: 999px;
+  padding: 0.54rem 0.75rem;
+  background: linear-gradient(135deg, rgba(86,241,212,0.94), rgba(87,200,255,0.88));
+  color: #00111d;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(87, 200, 255, 0.18);
+}
+
+.play-years.playing {
+  background: linear-gradient(135deg, rgba(255,209,102,0.96), rgba(255,107,107,0.9));
+}
+
+.scan-panel,
+.compare-panel {
+  margin-top: 0.9rem;
+  padding: 0.95rem;
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(86,241,212,0.10), transparent 11rem),
+    rgba(2, 10, 20, 0.54);
+}
+
+.scan-eyebrow {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--color-teal);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.scan-panel strong,
+.compare-panel strong {
+  display: block;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.scan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.45rem;
+  margin: 0.78rem 0 0.7rem;
+}
+
+.scan-grid div {
+  min-width: 0;
+  padding: 0.55rem 0.5rem;
+  border: 1px solid rgba(190, 235, 255, 0.11);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.045);
+}
+
+.scan-grid span {
+  display: block;
+  color: var(--color-text-tertiary);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scan-grid b {
+  display: block;
+  color: #ffffff;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.scan-panel p,
+.compare-panel p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--color-text-tertiary);
+}
+
+.compare-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0.75rem 0;
+}
+
+.compare-btn {
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 999px;
+  padding: 0.48rem 0.52rem;
+  background: rgba(255,255,255,0.055);
+  color: var(--color-text-secondary);
+  font-size: 0.66rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.compare-btn:hover,
+.compare-btn.active {
+  background: rgba(86, 241, 212, 0.16);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+#city-compare-svg {
+  display: block;
+  width: 100%;
+  min-height: 135px;
+  margin: 0.25rem 0 0.45rem;
+  overflow: visible;
+}
+
+.reveal-card {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(1.8rem, 3vw, 2.8rem);
+  padding: clamp(1.35rem, 3vw, 2.5rem);
+  border: 1px solid rgba(190, 235, 255, 0.17);
+  border-radius: 34px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035)),
+    radial-gradient(circle at 72% 22%, rgba(86,241,212,0.16), transparent 22rem),
+    radial-gradient(circle at 20% 88%, rgba(255,209,102,0.12), transparent 18rem),
+    rgba(5, 16, 29, 0.68);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(24px) saturate(1.2);
+}
+
+.reveal-orbit {
+  position: absolute;
+  right: -7rem;
+  top: -8rem;
+  width: 24rem;
+  height: 24rem;
+  border-radius: 50%;
+  border: 1px dashed rgba(86,241,212,0.28);
+  background: radial-gradient(circle, transparent 42%, rgba(86,241,212,0.10) 43% 44%, transparent 45% 100%);
+  animation: polarSpin 26s linear infinite;
+}
+
+.reveal-card h3 {
+  position: relative;
+  z-index: 1;
+  max-width: 850px;
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 5.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+}
+
+.reveal-answer {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin: 1.1rem 0 1.3rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid rgba(86, 241, 212, 0.22);
+  border-radius: 999px;
+  background: rgba(86,241,212,0.12);
+  color: #dffefa;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 900;
+}
+
+.reveal-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.reveal-grid div {
+  padding: 1rem;
+  border: 1px solid rgba(190, 235, 255, 0.14);
+  border-radius: 22px;
+  background: rgba(1, 10, 20, 0.50);
+}
+
+.reveal-grid span {
+  display: inline-flex;
+  margin-bottom: 0.55rem;
+  color: var(--color-teal);
+  font-weight: 950;
+}
+
+.reveal-grid strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.reveal-card:not(.is-visible) .reveal-answer,
+.reveal-card:not(.is-visible) .reveal-grid div {
+  opacity: 0.32;
+  filter: blur(2px);
+  transform: translateY(10px);
+}
+
+.reveal-card .reveal-answer,
+.reveal-card .reveal-grid div {
+  transition: opacity 650ms ease, filter 650ms ease, transform 650ms ease;
+}
+
+@media (max-width: 1040px) {
+  .climate-progress {
+    display: none;
+  }
+
+  .compare-buttons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .climate-lens,
+  .ocean-particles {
+    display: none;
+  }
+
+  .compare-buttons,
+  .reveal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ocean-particles,
+  .climate-lens {
+    display: none;
+  }
+}
