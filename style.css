@@ -833,142 +833,177 @@ h1, h2, h3 { color: var(--color-text-primary); letter-spacing: -0.055em; line-he
   }
 }
 
-/* Map background upgrade: subtle topographic/data-map texture */
+
+
+/* EN/LN map background + California fit fix */
 #map-wrap {
   position: relative;
   isolation: isolate;
+  overflow: hidden !important;
   background:
-    radial-gradient(circle at 30% 30%, rgba(86, 241, 212, 0.12), transparent 18rem),
-    radial-gradient(circle at 68% 66%, rgba(255, 177, 94, 0.11), transparent 20rem),
-    linear-gradient(180deg, rgba(6, 31, 48, 0.72), rgba(3, 12, 22, 0.92));
+    radial-gradient(circle at 25% 38%, rgba(87, 200, 255, 0.14), transparent 18rem),
+    radial-gradient(circle at 78% 68%, rgba(255, 159, 110, 0.12), transparent 20rem),
+    linear-gradient(180deg, rgba(4, 28, 45, 0.78), rgba(3, 12, 22, 0.94));
 }
 
 #map-wrap::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
   background:
-    linear-gradient(rgba(129, 218, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(129, 218, 255, 0.045) 1px, transparent 1px),
-    radial-gradient(ellipse at 26% 48%, transparent 0 34%, rgba(86, 241, 212, 0.055) 35%, transparent 36% 100%),
-    radial-gradient(ellipse at 58% 50%, transparent 0 39%, rgba(255, 209, 102, 0.05) 40%, transparent 41% 100%),
-    radial-gradient(ellipse at 78% 65%, transparent 0 30%, rgba(255, 159, 110, 0.052) 31%, transparent 32% 100%);
-  background-size:
-    74px 74px,
-    74px 74px,
-    560px 420px,
-    620px 480px,
-    520px 420px;
-  opacity: 0.92;
+    linear-gradient(rgba(129, 218, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 218, 255, 0.038) 1px, transparent 1px);
+  background-size: 74px 74px;
+  opacity: 0.82;
 }
 
 #map-wrap::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
   z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
   background:
-    linear-gradient(118deg, transparent 0 38%, rgba(255,255,255,0.07) 39%, transparent 40% 100%),
-    linear-gradient(150deg, transparent 0 58%, rgba(86,241,212,0.055) 59%, transparent 60% 100%),
-    radial-gradient(circle at 44% 58%, transparent 0 42%, rgba(0,0,0,0.22) 78%);
-  mix-blend-mode: screen;
-  opacity: 0.68;
+    radial-gradient(circle at 44% 58%, transparent 0 45%, rgba(0, 0, 0, 0.26) 82%),
+    linear-gradient(115deg, transparent 0 42%, rgba(255,255,255,0.045) 43%, transparent 44% 100%);
+  opacity: 0.78;
 }
 
-#ca-svg {
-  position: relative;
-  z-index: 2;
-  filter:
-    drop-shadow(0 24px 30px rgba(0, 0, 0, 0.25))
-    drop-shadow(0 0 18px rgba(255, 209, 102, 0.10));
-}
-
-.map-bg-detail {
+.enso-map-bg {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 1;
   pointer-events: none;
-  border-radius: inherit;
   overflow: hidden;
+  border-radius: inherit;
 }
 
-.map-region-tag,
-.map-corner-code {
+.enso-band {
   position: absolute;
-  padding: 0.38rem 0.62rem;
-  border: 1px solid rgba(190, 235, 255, 0.13);
+  left: -18%;
+  width: 138%;
+  height: 46%;
+  border-radius: 50%;
+  opacity: 0.55;
+  filter: blur(2px);
+  transform-origin: center;
+}
+
+.elnino-band {
+  top: 19%;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0 28px,
+      rgba(255, 159, 110, 0.18) 30px,
+      transparent 64px
+    ),
+    radial-gradient(ellipse at 70% 52%, rgba(255, 159, 110, 0.28), transparent 56%);
+  border-top: 2px solid rgba(255, 159, 110, 0.22);
+  animation: elninoFlow 13s ease-in-out infinite alternate;
+}
+
+.lanina-band {
+  bottom: 14%;
+  background:
+    repeating-linear-gradient(
+      78deg,
+      transparent 0 30px,
+      rgba(87, 200, 255, 0.15) 32px,
+      transparent 68px
+    ),
+    radial-gradient(ellipse at 34% 50%, rgba(87, 200, 255, 0.22), transparent 58%);
+  border-top: 2px solid rgba(87, 200, 255, 0.18);
+  animation: laninaFlow 15s ease-in-out infinite alternate;
+}
+
+.enso-label {
+  position: absolute;
+  z-index: 2;
+  padding: 0.4rem 0.68rem;
+  border: 1px solid rgba(190, 235, 255, 0.12);
   border-radius: 999px;
-  background: rgba(3, 14, 25, 0.58);
-  color: rgba(238, 250, 255, 0.68);
+  background: rgba(3, 14, 25, 0.48);
+  color: rgba(238, 250, 255, 0.62);
   font-size: 0.58rem;
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   backdrop-filter: blur(12px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.16);
 }
 
-.map-region-tag::before {
-  content: "";
-  display: inline-block;
-  width: 0.42rem;
-  height: 0.42rem;
-  margin-right: 0.35rem;
-  border-radius: 50%;
-  background: var(--color-teal);
-  box-shadow: 0 0 14px rgba(86,241,212,0.38);
-}
-
-.tag-pacific {
-  left: 1rem;
-  top: 1rem;
-}
-
-.tag-valley {
+.elnino-label {
   right: 1rem;
   top: 1rem;
+  color: rgba(255, 196, 128, 0.78);
 }
 
-.tag-desert {
-  right: 1rem;
-  bottom: 1rem;
-}
-
-.tag-sd {
+.lanina-label {
   left: 1rem;
   bottom: 1rem;
-  color: rgba(255, 209, 102, 0.88);
+  color: rgba(135, 218, 255, 0.78);
 }
 
-.tag-sd::before {
-  background: var(--color-gold);
-  box-shadow: 0 0 14px rgba(255,209,102,0.42);
+#ca-svg {
+  position: relative;
+  z-index: 3;
+  width: 92% !important;
+  height: 92% !important;
+  max-width: 880px;
+  max-height: 680px;
+  transform: scale(0.94) translateY(-1%) !important;
+  transform-origin: center center !important;
+  filter:
+    drop-shadow(0 24px 30px rgba(0, 0, 0, 0.25))
+    drop-shadow(0 0 16px rgba(255, 209, 102, 0.08));
 }
 
-.map-corner-code {
-  left: 50%;
-  bottom: 1rem;
-  transform: translateX(-50%);
-  color: rgba(185, 201, 214, 0.52);
-  background: rgba(3, 14, 25, 0.42);
+#float-label {
+  z-index: 20 !important;
+}
+
+@keyframes elninoFlow {
+  from {
+    transform: translateX(-4%) translateY(-2%) rotate(-7deg);
+    opacity: 0.36;
+  }
+  to {
+    transform: translateX(4%) translateY(4%) rotate(-3deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes laninaFlow {
+  from {
+    transform: translateX(5%) translateY(3%) rotate(5deg);
+    opacity: 0.32;
+  }
+  to {
+    transform: translateX(-5%) translateY(-3%) rotate(1deg);
+    opacity: 0.64;
+  }
 }
 
 @media (max-width: 1120px) {
-  .tag-valley,
-  .tag-desert,
-  .map-corner-code {
+  #ca-svg {
+    width: 94% !important;
+    height: 94% !important;
+    transform: scale(0.92) !important;
+  }
+
+  .enso-label {
     display: none;
   }
 }
 
 @media (max-width: 720px) {
-  .map-region-tag,
-  .map-corner-code {
-    display: none;
+  #ca-svg {
+    width: 96% !important;
+    height: 96% !important;
+    transform: scale(0.9) !important;
   }
 }
