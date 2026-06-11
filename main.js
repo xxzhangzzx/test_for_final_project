@@ -682,30 +682,12 @@ const COLORS = {
   document.getElementById('yearSlider').addEventListener('input', e => update(+e.target.value));
   update(1997);
 
-/* ---- Added interactive features: progress, lens, autoplay, scanner, comparison, particles, reveal ---- */
+/* ---- Added interactive features: progress, autoplay, scanner, comparison, particles, reveal ---- */
 (function() {
   const root = document.documentElement;
 
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
-  const lens = document.querySelector('.climate-lens');
-  if (lens && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    let lx = -200, ly = -200, tx = -200, ty = -200;
-    function moveLens() {
-      lx += (tx - lx) * 0.22;
-      ly += (ty - ly) * 0.22;
-      lens.style.left = lx + 'px';
-      lens.style.top = ly + 'px';
-      requestAnimationFrame(moveLens);
-    }
-    window.addEventListener('pointermove', e => {
-      tx = e.clientX;
-      ty = e.clientY;
-      document.body.classList.add('lens-active');
-    }, { passive: true });
-    window.addEventListener('pointerleave', () => document.body.classList.remove('lens-active'));
-    moveLens();
-  }
 
   const progressFill = document.getElementById('scroll-progress-fill');
   const progressStops = Array.from(document.querySelectorAll('.progress-stops a'));

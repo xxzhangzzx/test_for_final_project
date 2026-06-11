@@ -1771,7 +1771,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 
-/* All-features interactive layer: lens, progress, timeline play, comparison, scanner, reveal card */
+/* All-features interactive layer: progress, timeline play, comparison, scanner, reveal card */
 .ocean-particles {
   position: fixed;
   inset: 0;
@@ -1781,65 +1781,6 @@ input[type="range"]::-webkit-slider-thumb {
   pointer-events: none;
   opacity: 0.46;
   mix-blend-mode: screen;
-}
-
-.climate-lens {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 148px;
-  height: 148px;
-  border: 1px solid rgba(86, 241, 212, 0.55);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 80;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.82);
-  transition: opacity 160ms ease, transform 160ms ease;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.10), transparent 18%),
-    repeating-linear-gradient(0deg, rgba(86,241,212,0.10) 0 1px, transparent 1px 11px),
-    rgba(3, 20, 34, 0.18);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08) inset,
-    0 0 34px rgba(86, 241, 212, 0.22),
-    0 0 70px rgba(87, 200, 255, 0.16);
-  backdrop-filter: brightness(1.22) saturate(1.35) contrast(1.08) blur(1.5px);
-}
-
-.climate-lens::before,
-.climate-lens::after {
-  content: "";
-  position: absolute;
-  inset: 50% auto auto 50%;
-  width: 116%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(86,241,212,0.72), transparent);
-  transform: translate(-50%, -50%);
-}
-
-.climate-lens::after {
-  width: 1px;
-  height: 116%;
-  background: linear-gradient(180deg, transparent, rgba(86,241,212,0.72), transparent);
-}
-
-.climate-lens span {
-  position: absolute;
-  left: 50%;
-  bottom: 17px;
-  transform: translateX(-50%);
-  color: rgba(226, 255, 250, 0.88);
-  font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-body.lens-active .climate-lens {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
 }
 
 .climate-progress {
@@ -2116,7 +2057,6 @@ body.lens-active .climate-lens {
 }
 
 @media (max-width: 720px) {
-  .climate-lens,
   .ocean-particles {
     display: none;
   }
@@ -2128,8 +2068,7 @@ body.lens-active .climate-lens {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ocean-particles,
-  .climate-lens {
+  .ocean-particles {
     display: none;
   }
 }
